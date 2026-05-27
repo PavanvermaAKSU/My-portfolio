@@ -34,6 +34,9 @@ const projects = [
 ];
 
 const skills = [
+  "Project Management",
+  "Project Planning",
+  "Full-Stack Development",
   "Python",
   "JavaScript",
   "React",
@@ -42,7 +45,6 @@ const skills = [
   "MySQL",
   "Machine Learning",
   "Deep Learning",
-  "Docker",
   "Git & GitHub",
 ];
 
@@ -58,6 +60,7 @@ function App() {
           <div className="nav-links">
             <a href="#about">About</a>
             <a href="#projects">Projects</a>
+            <a href="#experience">Experience</a>
             <a href="#skills">Skills</a>
             <a href="#contact">Contact</a>
           </div>
@@ -66,18 +69,30 @@ function App() {
 
       <main>
         <section className="hero">
+          <div className="hero-bg">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
           <div className="hero-content">
             <p className="tag">BTech CSE — AI & Data Science</p>
 
             <h1>
-              Hi, I&apos;m <span>Pavan</span>. I build AI and full-stack web
-              projects.
+              Hi, I&apos;m <span>Pavan</span>. I create smart, modern and
+              scalable web experiences.
             </h1>
 
+            <p className="typing-text">
+              Full-Stack Developer • AI/ML Enthusiast • React + FastAPI
+              Developer
+            </p>
+
             <p className="hero-text">
-              I am a Computer Science student specializing in Artificial
-              Intelligence and Data Science. I work on practical projects using
-              React, FastAPI, Python, MySQL, and machine learning.
+              I am a B.Tech CSE student specializing in Artificial Intelligence
+              and Data Science at AKS University, Satna. I build practical
+              projects using React, FastAPI, Python, MySQL, and AI/ML concepts.
             </p>
 
             <div className="hero-buttons">
@@ -87,17 +102,51 @@ function App() {
               <a href="#contact" className="btn secondary-btn">
                 Contact Me
               </a>
+              <a href="/Profile.pdf" download className="btn glass-btn">
+                Download Profile
+              </a>
             </div>
           </div>
 
-          <div className="profile-card">
-            <img src="/profile.jpg" alt="Pavan Kumar Verma" className="profile-img" />
+          <div className="profile-3d-wrapper">
+            <div className="profile-card profile-3d-card">
+              <div className="profile-glow"></div>
 
-            <div className="profile-info">
-              <p>🎓 AKS University, Satna</p>
-              <p>💼 TCS iON Graduate Engineer Trainee IT</p>
-              <p>📍 Satna, Madhya Pradesh</p>
-              <p>📧 vermapavan9078@gmail.com</p>
+              <div className="profile-image-ring">
+                <img
+                  src="/profile.jpg"
+                  alt="Pavan Kumar Verma"
+                  className="profile-img"
+                />
+              </div>
+
+              <h3 className="profile-name">Pavan Kumar Verma</h3>
+              <p className="profile-role">AI & Full-Stack Developer</p>
+
+              <div className="profile-info">
+                <p>🎓 AKS University, Satna</p>
+                <p>💼 TCS iON GET–IT Program</p>
+                <p>🏢 MPOnline Limited Intern</p>
+                <p>📍 Madhya Pradesh, India</p>
+                <p>📧 vermapavan9078@gmail.com</p>
+              </div>
+
+              <div className="mini-socials">
+                <a
+                  href="https://github.com/PavanvermaAKSU"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/pavan-kumar-verma-19a42127a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -111,6 +160,30 @@ function App() {
               analysis, machine learning, deep learning, dashboards, and
               real-world problem-solving through technology.
             </p>
+          </div>
+        </section>
+
+        <section className="stats-section">
+          <div className="container stats-grid">
+            <div className="stat-card">
+              <h3>4+</h3>
+              <p>Major Projects</p>
+            </div>
+
+            <div className="stat-card">
+              <h3>2</h3>
+              <p>Internship Experiences</p>
+            </div>
+
+            <div className="stat-card">
+              <h3>12+</h3>
+              <p>Technical Skills</p>
+            </div>
+
+            <div className="stat-card">
+              <h3>2027</h3>
+              <p>Expected Graduation</p>
+            </div>
           </div>
         </section>
 
@@ -135,6 +208,7 @@ function App() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="project-link"
+                        aria-label={`Open ${project.title}`}
                       >
                         ↗
                       </a>
@@ -150,6 +224,45 @@ function App() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="experience" className="section experience-section">
+          <div className="container">
+            <h2>Experience</h2>
+            <p className="section-subtitle">
+              Internship and industry-level learning experience.
+            </p>
+
+            <div className="timeline">
+              <div className="timeline-item">
+                <span className="timeline-dot"></span>
+                <div className="timeline-card">
+                  <h3>Tata Consultancy Services</h3>
+                  <p className="timeline-role">
+                    Intern — TCS iON GET–IT Program
+                  </p>
+                  <p>
+                    Gaining hands-on experience in software development, web
+                    technologies, database management, and project-based
+                    learning through the TCS iON GET–IT Program.
+                  </p>
+                </div>
+              </div>
+
+              <div className="timeline-item">
+                <span className="timeline-dot"></span>
+                <div className="timeline-card">
+                  <h3>MPOnline Limited</h3>
+                  <p className="timeline-role">Intern</p>
+                  <p>
+                    Gained practical exposure to industry-level workflows,
+                    professional communication, project planning, and real-world
+                    technical project experience.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -179,7 +292,51 @@ function App() {
 
               <div className="skill-card">
                 <h3>🧠 AI & Data</h3>
-                <p>ML, Deep Learning, MySQL, Data Analysis</p>
+                <p>Machine Learning, Deep Learning, MySQL, Data Analysis</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section certification-section">
+          <div className="container">
+            <h2>Certifications</h2>
+
+            <div className="cert-grid">
+              <div className="cert-card">
+                <div>
+                  <h3>Certificate of Industry Project</h3>
+                  <p>Campus Pulse Student Satisfaction Dashboard</p>
+                </div>
+                <span>🏆</span>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>Internship Offer Letter</h3>
+                  <p>TCS iON / Industry Training Experience</p>
+                </div>
+                <span>📄</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section education-section">
+          <div className="container">
+            <h2>Education</h2>
+
+            <div className="education-grid">
+              <div className="education-card">
+                <h3>AKS University, Satna</h3>
+                <p>Bachelor of Technology — Artificial Intelligence</p>
+                <span>2023 - 2027</span>
+              </div>
+
+              <div className="education-card">
+                <h3>Govt. Gyanodaya Vidyalaya, Rewa</h3>
+                <p>High School - Higher Secondary, PCM</p>
+                <span>2019 - 2023</span>
               </div>
             </div>
           </div>
@@ -197,8 +354,11 @@ function App() {
               </p>
 
               <div className="contact-buttons">
-                <a href="mailto:vermapavan9078@gmail.com" className="btn primary-btn">
-                  Email
+                <a
+                  href="mailto:vermapavan9078@gmail.com"
+                  className="btn primary-btn"
+                >
+                  Email Me
                 </a>
 
                 <a
@@ -218,15 +378,22 @@ function App() {
                 >
                   LinkedIn
                 </a>
+
+                <a
+                  href="https://radiant-speculoos-060d21.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn glass-btn"
+                >
+                  Portfolio
+                </a>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer>
-        © 2026 Pavan Kumar Verma. Built with React.
-      </footer>
+      <footer>© 2026 Pavan Kumar Verma. Built with React.</footer>
     </div>
   );
 }
