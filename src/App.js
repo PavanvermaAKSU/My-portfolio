@@ -25,17 +25,57 @@ const projects = [
     tech: ["Python", "Flask", "TensorFlow", "JavaScript"],
   },
   {
-    title: "CrowdGuard AI",
-    type: "AI Safety Project",
+    title: "Iris flower classification",
+    type: "AI/ML Project",
     description:
-      "An intelligent crowd monitoring concept focused on threat detection, false alarm reduction, and real-time crowd safety insights.",
-    tech: ["AI", "Computer Vision", "Python", "Dashboard"],
+      "An AI and data science based finished project for analzye input and according to input predict flower species",
+    tech: ["AI","data science","machine learning","model training"],
+  },
+  {
+    title: "Face mask detection",
+    type: "AI/ML Project",
+    description:
+      "An AI based finished project by YOLOv8 model for analzye face mask weared or not or incorrect showes confident",
+    tech: ["AI","computer vision","machine learning","model training","YOLOv8"],
+  },
+  {
+    title: "Customer retaintion churn analysis",
+    type: "Data science project",
+    description: "Advanced customer churn analysis and prediction project using Python, Power BI, and Random Forest to identify churn risk, estimate revenue loss, and recommend retention strategies",
+    tech: ["Python", "computer vision", "Data analysis", "Data science", "PowerBI"],
+  },
+  {
+    title:"Business sales analytic dashboard",
+    description: "I used Python for data cleaning and exploratory data analysis, and Power BI for creating an interactive dashboard. The project includes revenue trend analysis, top-selling products, category-wise revenue, region-wise sales and profit analysis, and business recommendations.",
+    type : "Data science project",
+    tech:["Python", "PowerBI", "Data analytics", "Creative innovation", "Consistency"],
+  },
+  {
+    title:"House Price Prediction",
+    description:"This project predicts house prices using Machine Learning.",
+    type: "AI and ML project",
+    tech : ["Python", "Jupyter Notebook", "Model training", "Machine learning"],
+  },
+  {
+    title: "Marketing funnel analytics conversion dashboard",
+    description:"Built an advanced Marketing Funnel Analytics Dashboard using Python, Streamlit, Pandas, and Scikit-learn to analyze campaign ROI, conversion rate, ROAS, funnel drop-off, and customer segments using K-Means clustering.",
+    type: "Data science project",
+    tech:["Python", "Data visualization", "Data science"],
+  },
+  {
+    title: "Movie Recommendation system",
+    description : "There is movie recommendation project using for new ai upgrade system with models",
+    type:"AI and Ml Project",
+    tech:["Python", "Machine learning", "Deep learning", "AI integration"],
+    link:  "https://github.com/PavanvermaAKSU/MOVIE-RECOMMENDATION-SYSTEM",
   },
 ];
 
 const skills = [
   "Project Management",
   "Project Planning",
+  "YOLOv8",
+  "Smart Using AI",
   "Full-Stack Development",
   "Python",
   "JavaScript",
@@ -81,18 +121,17 @@ function App() {
 
             <h1>
               Hi, I&apos;m <span>Pavan</span>. I create smart, modern and
-              scalable web experiences.
+              scalable web experiences, and also excited for play with data.
             </h1>
 
             <p className="typing-text">
-              Full-Stack Developer • AI/ML Enthusiast • React + FastAPI
-              Developer
+              • Data Science • AI/ML Enthusiast • Full-Stack Developer  
             </p>
 
             <p className="hero-text">
               I am a B.Tech CSE student specializing in Artificial Intelligence
               and Data Science at AKS University, Satna. I build practical
-              projects using React, FastAPI, Python, MySQL, and AI/ML concepts.
+              projects using React, FastAPI, Python, MySQL, PowerBI, MS365 and AI/ML concepts.
             </p>
 
             <div className="hero-buttons">
@@ -125,8 +164,8 @@ function App() {
 
               <div className="profile-info">
                 <p>🎓 AKS University, Satna</p>
-                <p>💼 TCS iON GET–IT Program</p>
-                <p>🏢 MPOnline Limited Intern</p>
+                <p>💼 Ex. TCS iON GET–IT Program</p>
+                <p>🏢 Ex. MPOnline Limited Intern</p>
                 <p>📍 Madhya Pradesh, India</p>
                 <p>📧 vermapavan9078@gmail.com</p>
               </div>
@@ -144,7 +183,9 @@ function App() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  LinkedIn
+                  <p>
+                    LinkedIn
+                  </p>
                 </a>
               </div>
             </div>
@@ -166,12 +207,12 @@ function App() {
         <section className="stats-section">
           <div className="container stats-grid">
             <div className="stat-card">
-              <h3>4+</h3>
+              <h3>9+</h3>
               <p>Major Projects</p>
             </div>
 
             <div className="stat-card">
-              <h3>2</h3>
+              <h3>5</h3>
               <p>Internship Experiences</p>
             </div>
 
@@ -263,6 +304,38 @@ function App() {
                   </p>
                 </div>
               </div>
+              <div className="timeline-item">
+                <span className="timeline-dot"></span>
+                <div className="timeline-card">
+                  <h3>CodeTech IT Solution</h3>
+                  <p className="timeline-role">Artificial Intelligence Intern</p>
+                  <p>
+                    Such as great experience in working on hands-on project internship,
+                  </p>
+                </div>
+              </div>
+
+              <div className="timeline-item">
+                <span className="timeline-dot"></span>
+                <div className="timeline-card">
+                  <h3>Future interns</h3>
+                  <p className="timeline-role">Data science & analytic Intern</p>
+                  <p>
+                    Gaining hands-on projects experience in future intern great experience in there,
+                    i'm done internship from there with Data science domain.
+                  </p>
+                </div>
+              </div>
+              <div className="timeline-item">
+                <span className="timeline-dot"></span>
+                <div className="timeline-card">
+                  <h3>Xylofy AI</h3>
+                  <p className="timeline-role">AI & DS Intern</p>
+                  <p>
+                    That internship is running now in this internship i have great experience something update after.....
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -292,7 +365,7 @@ function App() {
 
               <div className="skill-card">
                 <h3>🧠 AI & Data</h3>
-                <p>Machine Learning, Deep Learning, MySQL, Data Analysis</p>
+                <p>Machine Learning, Deep Learning, MySQL, Data Analysis, PowerBI</p>
               </div>
             </div>
           </div>
@@ -306,17 +379,81 @@ function App() {
               <div className="cert-card">
                 <div>
                   <h3>Certificate of Industry Project</h3>
-                  <p>Campus Pulse Student Satisfaction Dashboard</p>
+                  <p>TCS iON</p>
                 </div>
                 <span>🏆</span>
               </div>
 
               <div className="cert-card">
                 <div>
-                  <h3>Internship Offer Letter</h3>
-                  <p>TCS iON / Industry Training Experience</p>
+                  <h3>National Profeciency Test</h3>
+                  <p>TCS iON </p>
                 </div>
                 <span>📄</span>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>
+                    Artificial intelligence intern completion
+                  </h3>
+                  <p> CodeTech IT Solution</p>
+                </div>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>
+                    Microsoft Azure AI Essential Professional certificate
+                  </h3>
+                  <p>
+                    Microsoft and LinkedIn
+                  </p>
+                </div>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>
+                    Microsoft Azure AI Essentials: Workloads and Machine Learning on Azure
+                  </h3>
+                  <p>
+                    LinkedIn
+                  </p>
+                </div>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>
+                    Data Analytics for Business Professionals
+                  </h3>
+                  <p>
+                    LinkedIn
+                  </p>
+                </div>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>
+                    Career Essentials in Data Analysis
+                  </h3>
+                  <p>
+                    Microsoft
+                  </p>
+                </div>
+              </div>
+
+              <div className="cert-card">
+                <div>
+                  <h3>
+                    Interview Skills
+                  </h3>
+                  <p>
+                    TCS iON
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -349,7 +486,7 @@ function App() {
 
               <p>
                 I am open to internships, fresher opportunities, project
-                collaboration, and learning-focused roles in software
+                collaboration, and learning-focused roles in Data Science, Data Analystics, software
                 development, AI/ML, and full-stack development.
               </p>
 
@@ -378,22 +515,13 @@ function App() {
                 >
                   LinkedIn
                 </a>
-
-                <a
-                  href="https://radiant-speculoos-060d21.netlify.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn glass-btn"
-                >
-                  Portfolio
-                </a>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer>© 2026 Pavan Kumar Verma. Built with React.</footer>
+      <footer>© 2026 Pavan Kumar Verma. Professionnal Portfolio Built with React.</footer>
     </div>
   );
 }
