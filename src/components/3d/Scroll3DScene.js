@@ -1,38 +1,63 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import {
+  PERSONAL_INFO,
   PROJECTS,
+  TECH_SKILLS_FLAT,
   CERTIFICATIONS,
   METRICS,
-  INTERNSHIPS,
-  TECH_SKILLS,
-  PERSONAL_INFO,
+  JOURNEY_STAGES,
 } from "../../data/portfolioData";
 import soundFX from "../ui/SoundFX";
-import { Compass, RotateCw, Sparkles, Layers, Award, Cpu, Mail } from "lucide-react";
-import { getActiveChapter, getCameraState, getSceneChapter } from "./sceneConfig";
+import {
+  Compass,
+  RotateCw,
+  Sparkles,
+  Layers,
+  Award,
+  Cpu,
+  Mail,
+  Home,
+  User,
+  ExternalLink,
+} from "lucide-react";
+import {
+  getActiveChapter,
+  getCameraState,
+  getSceneChapter,
+} from "./sceneConfig";
 
-export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExperienceActive = true, selectedProject = null }) {
+export default function Scroll3DScene({
+  onSelectProject,
+  onSelectDetail,
+  isExperienceActive = true,
+  selectedProject = null,
+}) {
   const mountRef = useRef(null);
-  const [activeZone, setActiveZone] = useState("lounge");
+  const [activeZone, setActiveZone] = useState("entrance");
   const [hoveredObjectInfo, setHoveredObjectInfo] = useState(null);
   const [isOrbiting, setIsOrbiting] = useState(false);
   const [webglUnavailable, setWebglUnavailable] = useState(false);
 
   // References for animation loop
   const cameraRef = useRef(null);
-  const targetCamPos = useRef(new THREE.Vector3(0, 0.4, 9.5));
-  const targetLookAt = useRef(new THREE.Vector3(0, 0, 0));
-  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+  const targetCamPos = useRef(new THREE.Vector3(0, 1.2, 11.5));
+  const targetLookAt = useRef(new THREE.Vector3(0, 0.2, 0));
+  const currentLookAt = useRef(new THREE.Vector3(0, 0.2, 0));
   const sceneState = useRef({
     scrollProgress: 0,
+    targetProgress: 0,
     entranceProgress: isExperienceActive ? 1 : 0,
     projectFocus: { point: null, startedAt: 0 },
     mouse: { x: 0, y: 0, tx: 0, ty: 0 },
     isDragging: false,
     dragStart: { x: 0, y: 0 },
     orbitOffset: { theta: 0, phi: 0 },
+    isAutonomousFlight: false,
+    flightTargetPos: null,
+    flightTargetLook: null,
   });
+
   const experienceActiveRef = useRef(isExperienceActive);
   const selectedProjectRef = useRef(selectedProject);
   experienceActiveRef.current = isExperienceActive;
@@ -42,11 +67,32 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
     setActiveZone(zoneKey);
     const chapter = getSceneChapter(zoneKey);
     if (chapter) {
-      targetCamPos.current.set(...chapter.position);
-      targetLookAt.current.set(...chapter.target);
+      sceneState.current.isAutonomousFlight = true;
+      sceneState.current.flightTargetPos = new THREE.Vector3(...chapter.position);
+      sceneState.current.flightTargetLook = new THREE.Vector3(...chapter.target);
+      sceneState.current.orbitOffset = { theta: 0, phi: 0 };
       soundFX.playClick();
+
+      // Also scroll document smoothly so scrollProgress stays synchronized
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        1
+      );
+      const targetScrollY = ((chapter.range[0] + chapter.range[1]) / 2) * maxScroll;
+      window.scrollTo({ top: targetScrollY, behavior: "smooth" });
     }
   }, []);
+
+  // Listen to external navigation events from top Navbar
+  useEffect(() => {
+    const handleNavEvent = (e) => {
+      if (e.detail?.zone) {
+        flyToZone(e.detail.zone);
+      }
+    };
+    window.addEventListener("bq:nav-to-zone", handleNavEvent);
+    return () => window.removeEventListener("bq:nav-to-zone", handleNavEvent);
+  }, [flyToZone]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -58,10 +104,10 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
 
     // --- 1. Scene & Camera Setup ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x050505, 0.042);
+    scene.fog = new THREE.FogExp2(0x060608, 0.038);
 
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 75);
-    camera.position.set(0, 0.4, 9.5);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 85);
+    camera.position.set(0, 1.2, 11.5);
     cameraRef.current = camera;
 
     let renderer;
@@ -75,6 +121,7 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       setWebglUnavailable(true);
       return undefined;
     }
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, width < 850 ? 1.5 : 2));
     renderer.shadowMap.enabled = width >= 850;
@@ -83,40 +130,34 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
     renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
 
-    // --- 2. Realistic Studio Lighting ---
-    const hemiLight = new THREE.HemisphereLight(0xffeedd, 0x080808, 2.4);
+    // --- 2. Studio Lighting Architecture ---
+    const hemiLight = new THREE.HemisphereLight(0xfff5ea, 0x0a0a0f, 2.6);
     scene.add(hemiLight);
 
-    const keyLight = new THREE.DirectionalLight(0xfff5ea, 3.6);
-    keyLight.position.set(-6, 7, 7);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.set(1024, 1024);
+    const keyLight = new THREE.DirectionalLight(0xfff8f0, 3.8);
+    keyLight.position.set(-8, 9, 8);
+    keyLight.castShadow = width >= 850;
+    if (keyLight.castShadow) {
+      keyLight.shadow.mapSize.set(1024, 1024);
+      keyLight.shadow.bias = -0.0001;
+    }
     scene.add(keyLight);
 
-    const crimsonRimLight = new THREE.PointLight(0xe11d48, 8.0, 18);
-    crimsonRimLight.position.set(4.5, 1.5, 2.5);
-    scene.add(crimsonRimLight);
-
-    const cyanRimLight = new THREE.PointLight(0x00f0ff, 4.5, 16);
-    cyanRimLight.position.set(-5.0, -0.5, 3.5);
+    const cyanRimLight = new THREE.PointLight(0x00f0ff, 4.5, 20);
+    cyanRimLight.position.set(-6, 2.5, 4);
     scene.add(cyanRimLight);
 
-    const goldAccentLight = new THREE.PointLight(0xf59e0b, 3.5, 12);
-    goldAccentLight.position.set(0, 3.5, 1.0);
-    scene.add(goldAccentLight);
-    const ceilingLight = new THREE.RectAreaLight(0xffe6c7, 2.2, 4.5, 1.2);
-    ceilingLight.position.set(0, 4.6, 0.5);
-    ceilingLight.rotation.x = Math.PI / 2;
-    scene.add(ceilingLight);
+    const amberRimLight = new THREE.PointLight(0xf59e0b, 5.0, 22);
+    amberRimLight.position.set(6, 3, 2);
+    scene.add(amberRimLight);
 
-    // --- 3. Master Groups ---
-    const masterStudio = new THREE.Group();
-    scene.add(masterStudio);
+    const roseAccentLight = new THREE.PointLight(0xe11d48, 6.0, 18);
+    roseAccentLight.position.set(0, 2, -2.5);
+    scene.add(roseAccentLight);
 
-    const interactiveCards = []; // for raycasting
-    const profileSignalMeshes = [];
-    const projectDisplayRecords = [];
-    const heroWallElements = [];
+    // --- 3. Resource Tracking & Helper ---
+    const interactiveObjects = [];
+    const dynamicAnimators = [];
     const disposableResources = { meshes: [], textures: [], materials: [], geometries: [] };
 
     const trackResource = (mesh, mat, geo, tex) => {
@@ -126,9 +167,8 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       if (tex) disposableResources.textures.push(tex);
     };
 
-    // Helper for box creation
-    const createBox = (w, h, d, x, y, z, material, parent = masterStudio) => {
-      const geo = new THREE.BoxGeometry(w, h, d, 2, 2, 2);
+    const createBox = (w, h, d, x, y, z, material, parent = scene) => {
+      const geo = new THREE.BoxGeometry(w, h, d);
       const mesh = new THREE.Mesh(geo, material);
       mesh.position.set(x, y, z);
       mesh.castShadow = true;
@@ -138,462 +178,772 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       return mesh;
     };
 
-    // --- 4. Materials Library ---
-    const matLeatherCharcoal = new THREE.MeshStandardMaterial({
-      color: 0x161413,
-      roughness: 0.76,
-      metalness: 0.12,
+    // --- 4. Material Palette ---
+    const matObsidianWall = new THREE.MeshStandardMaterial({
+      color: 0x0c0b0f,
+      roughness: 0.94,
+      metalness: 0.06,
     });
-    const matLeatherBlack = new THREE.MeshStandardMaterial({
-      color: 0x0a0908,
-      roughness: 0.88,
+    const matConcreteFloor = new THREE.MeshStandardMaterial({
+      color: 0x08080a,
+      roughness: 0.72,
+      metalness: 0.22,
     });
-    const matBrass = new THREE.MeshStandardMaterial({
-      color: 0xd4af37,
-      roughness: 0.28,
-      metalness: 0.9,
-    });
-    const matCrimsonLamp = new THREE.MeshStandardMaterial({
-      color: 0xe11d48,
-      roughness: 0.35,
-      metalness: 0.2,
-      emissive: 0xe11d48,
-      emissiveIntensity: 0.85,
-    });
-    const matArchitecturalWall = new THREE.MeshStandardMaterial({
-      color: 0x121212,
-      roughness: 0.96,
-      metalness: 0.05,
-    });
-    const matReflectiveFloor = new THREE.MeshStandardMaterial({
-      color: 0x090909,
-      roughness: 0.8,
+    const matWalnutWood = new THREE.MeshStandardMaterial({
+      color: 0x2b1c14,
+      roughness: 0.45,
       metalness: 0.15,
     });
-    const matCeiling = new THREE.MeshStandardMaterial({
-      color: 0x25201d,
-      roughness: 0.92,
-      metalness: 0.02,
+    const matBrushedBrass = new THREE.MeshStandardMaterial({
+      color: 0xd4af37,
+      roughness: 0.26,
+      metalness: 0.88,
     });
-    const matWarmWood = new THREE.MeshStandardMaterial({
-      color: 0x3a281c,
-      roughness: 0.42,
-      metalness: 0.2,
+    const matCharcoalLeather = new THREE.MeshStandardMaterial({
+      color: 0x141316,
+      roughness: 0.78,
+      metalness: 0.08,
     });
-
-    // --- 5. Studio Architecture: Wall & Reflective Floor ---
-    createBox(16, 10, 0.2, 0, 1.5, -2.4, matArchitecturalWall);
-    createBox(16, 0.16, 8, 0, 5.25, 0.6, matCeiling);
-    createBox(8.5, 0.08, 0.12, 0, 4.92, -1.9, matWarmWood);
-    createBox(0.08, 0.3, 6.8, -6.8, 4.96, 0.3, matWarmWood);
-    createBox(0.08, 0.3, 6.8, 6.8, 4.96, 0.3, matWarmWood);
-
-    const floorGeo = new THREE.PlaneGeometry(32, 24);
-    const floorMesh = new THREE.Mesh(floorGeo, matReflectiveFloor);
-    floorMesh.rotation.x = -Math.PI / 2;
-    floorMesh.position.y = -2.15;
-    masterStudio.add(floorMesh);
-    trackResource(floorMesh, matReflectiveFloor, floorGeo);
-
-    // Floor Grid lines for high-tech spatial studio feel
-    const gridHelper = new THREE.GridHelper(28, 28, 0xe11d48, 0x222222);
-    gridHelper.position.y = -2.14;
-    gridHelper.material.opacity = 0.35;
-    gridHelper.material.transparent = true;
-    masterStudio.add(gridHelper);
-    trackResource(gridHelper);
-
-    // --- 6. 3D Designer Lounge Sofa (High-Fidelity Model) ---
-    const sofaGroup = new THREE.Group();
-    sofaGroup.position.set(0, -0.35, 0);
-    masterStudio.add(sofaGroup);
-
-    // Base Frame
-    createBox(5.3, 0.65, 1.55, 0, -1.15, 0.1, matLeatherCharcoal, sofaGroup);
-    // Backrest with sculpted angle
-    const backrest = createBox(5.25, 1.45, 0.48, 0, -0.22, -0.45, matLeatherCharcoal, sofaGroup);
-    backrest.rotation.x = -0.05;
-    // Armrests
-    createBox(0.48, 1.25, 1.65, -2.62, -0.52, 0.1, matLeatherCharcoal, sofaGroup);
-    createBox(0.48, 1.25, 1.65, 2.62, -0.52, 0.1, matLeatherCharcoal, sofaGroup);
-
-    // 3 Ergonomic Comfort Cushions with organic tilts
-    [-1.6, 0, 1.6].forEach((xPos, idx) => {
-      const cushion = createBox(
-        1.48,
-        0.26,
-        1.38,
-        xPos,
-        -0.72,
-        0.18,
-        idx === 1 ? matLeatherBlack : matLeatherCharcoal,
-        sofaGroup
-      );
-      cushion.rotation.z = idx === 1 ? -0.02 : 0.02;
+    const matDarkGlass = new THREE.MeshPhysicalMaterial({
+      color: 0x111827,
+      transmission: 0.85,
+      opacity: 0.9,
+      transparent: true,
+      roughness: 0.12,
+      ior: 1.5,
+      thickness: 0.4,
     });
-
-    // 4 Polished Brass Legs
-    [-2.25, 2.25].forEach((x) => {
-      [-0.52, 0.62].forEach((z) => {
-        createBox(0.1, 0.75, 0.1, x, -1.82, z, matBrass, sofaGroup);
-      });
-    });
-
-    // Coffee table and contact tablet establish the room's physical contact point.
-    const coffeeTable = new THREE.Group();
-    coffeeTable.position.set(0, 0, 1.7);
-    masterStudio.add(coffeeTable);
-    const coffeeTopGeometry = new THREE.CylinderGeometry(1.45, 1.45, 0.16, 48);
-    const coffeeTop = new THREE.Mesh(coffeeTopGeometry, matWarmWood);
-    coffeeTop.position.y = -1.2;
-    coffeeTable.add(coffeeTop);
-    trackResource(coffeeTop, matWarmWood, coffeeTopGeometry);
-    const coffeeStemGeometry = new THREE.CylinderGeometry(0.16, 0.28, 1.05, 24);
-    const coffeeStem = new THREE.Mesh(coffeeStemGeometry, matBrass);
-    coffeeStem.position.y = -1.72;
-    coffeeTable.add(coffeeStem);
-    trackResource(coffeeStem, matBrass, coffeeStemGeometry);
-    const coffeeBaseGeometry = new THREE.CylinderGeometry(0.78, 0.9, 0.12, 32);
-    const coffeeBase = new THREE.Mesh(coffeeBaseGeometry, matBrass);
-    coffeeBase.position.y = -2.25;
-    coffeeTable.add(coffeeBase);
-    trackResource(coffeeBase, matBrass, coffeeBaseGeometry);
-
-    const contactTabletGeometry = new THREE.BoxGeometry(0.78, 0.06, 0.5, 2, 2, 2);
-    const contactTabletMaterial = new THREE.MeshStandardMaterial({
-      color: 0x0a0a0a,
-      emissive: 0xff5c35,
-      emissiveIntensity: 0.5,
-      roughness: 0.24,
-      metalness: 0.7,
-    });
-    const contactTablet = new THREE.Mesh(contactTabletGeometry, contactTabletMaterial);
-    contactTablet.position.set(0, -1.08, 0.08);
-    contactTablet.rotation.x = -0.18;
-    coffeeTable.add(contactTablet);
-    contactTablet.userData = {
-      type: "information",
-      data: { id: "contact", title: "Get in touch" },
-      defaultPos: contactTablet.position.clone(),
-      defaultRot: contactTablet.rotation.clone(),
-    };
-    interactiveCards.push(contactTablet);
-    trackResource(contactTablet, contactTabletMaterial, contactTabletGeometry);
-
-    // Designer side table and glowing lamp.
-    const tableTopGeo = new THREE.CylinderGeometry(0.62, 0.62, 0.08, 32);
-    const tableTop = new THREE.Mesh(tableTopGeo, matBrass);
-    tableTop.position.set(3.4, -1.25, -0.1);
-    sofaGroup.add(tableTop);
-    trackResource(tableTop, matBrass, tableTopGeo);
-
-    const tableStemGeo = new THREE.CylinderGeometry(0.05, 0.05, 1.15, 16);
-    const tableStem = new THREE.Mesh(tableStemGeo, matBrass);
-    tableStem.position.set(3.4, -1.8, -0.1);
-    sofaGroup.add(tableStem);
-    trackResource(tableStem, matBrass, tableStemGeo);
-
-    const lampSphereGeo = new THREE.SphereGeometry(0.2, 24, 24);
-    const lampSphere = new THREE.Mesh(lampSphereGeo, matCrimsonLamp);
-    lampSphere.position.set(3.4, -0.9, -0.1);
-    sofaGroup.add(lampSphere);
-    trackResource(lampSphere, matCrimsonLamp, lampSphereGeo);
-
-    // Profile workspace: a quiet desk and monitor that anchor the opening chapter.
-    const profileWorkspace = new THREE.Group();
-    profileWorkspace.position.set(-3.5, 0.15, -0.35);
-    masterStudio.add(profileWorkspace);
-
-    const matDesk = new THREE.MeshStandardMaterial({
-      color: 0x201b18,
-      roughness: 0.62,
-      metalness: 0.18,
-    });
-    const matScreenFrame = new THREE.MeshStandardMaterial({
-      color: 0x080808,
-      roughness: 0.35,
+    const matScreenObsidian = new THREE.MeshStandardMaterial({
+      color: 0x050507,
+      roughness: 0.3,
       metalness: 0.8,
     });
-    const matScreenGlow = new THREE.MeshBasicMaterial({
-      color: 0xff5c35,
+
+    // Master Studio World Group
+    const digitalStudio = new THREE.Group();
+    scene.add(digitalStudio);
+
+    // --- 5. Architectural Structure (Floor, Ceiling, Columns, Walls) ---
+    const floorGeo = new THREE.PlaneGeometry(36, 32);
+    const floorMesh = new THREE.Mesh(floorGeo, matConcreteFloor);
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.y = -1.8;
+    floorMesh.receiveShadow = true;
+    digitalStudio.add(floorMesh);
+    trackResource(floorMesh, matConcreteFloor, floorGeo);
+
+    // Architectural floor grid — fine detail layer
+    const floorGrid = new THREE.GridHelper(34, 68, 0x1a1a22, 0x1a1a22);
+    floorGrid.position.y = -1.795;
+    floorGrid.material.opacity = 0.55;
+    floorGrid.material.transparent = true;
+    digitalStudio.add(floorGrid);
+    trackResource(floorGrid);
+
+    // Accent floor grid — coarse rose neon overlay
+    const floorGridAccent = new THREE.GridHelper(34, 17, 0xe11d48, 0x1e0a12);
+    floorGridAccent.position.y = -1.79;
+    floorGridAccent.material.opacity = 0.22;
+    floorGridAccent.material.transparent = true;
+    digitalStudio.add(floorGridAccent);
+    trackResource(floorGridAccent);
+
+    // Main back gallery wall
+    createBox(28, 8.5, 0.25, 0, 2.4, -4.5, matObsidianWall, digitalStudio);
+    // Left boundary studio wall
+    createBox(0.25, 8.5, 24, -14, 2.4, 3.5, matObsidianWall, digitalStudio);
+    // Right boundary studio wall
+    createBox(0.25, 8.5, 24, 14, 2.4, 3.5, matObsidianWall, digitalStudio);
+    // Warm timber ceiling louvers
+    for (let i = -10; i <= 10; i += 2.2) {
+      createBox(27.8, 0.12, 0.18, 0, 6.0, i, matWalnutWood, digitalStudio);
+    }
+
+    // Subtle ceiling ambient light strips (emissive planes)
+    const ceilingStripMat = new THREE.MeshBasicMaterial({
+      color: 0xfff0e0,
       transparent: true,
-      opacity: 0.24,
+      opacity: 0.18,
+    });
+    [-8, 0, 8].forEach((x) => {
+      const stripGeo = new THREE.PlaneGeometry(0.25, 16);
+      const strip = new THREE.Mesh(stripGeo, ceilingStripMat);
+      strip.position.set(x, 5.85, 0);
+      strip.rotation.x = -Math.PI / 2;
+      digitalStudio.add(strip);
+      trackResource(strip, ceilingStripMat, stripGeo);
     });
 
-    createBox(4.2, 0.16, 1.65, 0, -0.82, 0, matDesk, profileWorkspace);
-    [-1.7, 1.7].forEach((x) => {
-      createBox(0.14, 1.25, 0.14, x, -1.42, 0, matDesk, profileWorkspace);
-    });
-
-    const monitorFrame = createBox(2.75, 1.65, 0.16, 0, 0.32, -0.42, matScreenFrame, profileWorkspace);
-    const monitorStand = createBox(0.14, 0.6, 0.14, 0, -0.58, -0.42, matScreenFrame, profileWorkspace);
-    createBox(0.9, 0.08, 0.38, 0, -0.88, -0.42, matScreenFrame, profileWorkspace);
-    monitorFrame.userData = { type: "profile", data: PERSONAL_INFO };
-    monitorStand.userData = { type: "profile", data: PERSONAL_INFO };
-
-    const screenCanvas = document.createElement("canvas");
-    screenCanvas.width = 960;
-    screenCanvas.height = 560;
-    const screenContext = screenCanvas.getContext("2d");
-    screenContext.fillStyle = "#0b0b0b";
-    screenContext.fillRect(0, 0, screenCanvas.width, screenCanvas.height);
-    screenContext.fillStyle = "#ff5c35";
-    screenContext.fillRect(54, 54, 112, 8);
-    screenContext.fillStyle = "#ffffff";
-    screenContext.font = '700 48px "Inter Tight", sans-serif';
-    screenContext.fillText("PAVAN", 54, 148);
-    screenContext.fillText("KUMAR VERMA", 54, 204);
-    screenContext.fillStyle = "rgba(255,255,255,0.58)";
-    screenContext.font = '400 23px "JetBrains Mono", monospace';
-    screenContext.fillText("AI ENGINEER / DATA / SYSTEMS", 54, 258);
-    screenContext.fillStyle = "rgba(255,255,255,0.14)";
-    screenContext.fillRect(54, 314, 850, 2);
-    screenContext.fillStyle = "#ff5c35";
-    screenContext.font = '600 18px "JetBrains Mono", monospace';
-    screenContext.fillText("MODEL SIGNAL / LIVE WORKSPACE", 54, 360);
-    screenContext.fillStyle = "rgba(255,255,255,0.55)";
-    screenContext.fillText("FORECAST", 54, 424);
-    screenContext.fillText("VISION", 286, 424);
-    screenContext.fillText("PRODUCT", 518, 424);
-    screenContext.fillStyle = "#ff5c35";
-    [0.66, 0.82, 0.52, 0.9, 0.74, 0.96, 0.61].forEach((value, index) => {
-      screenContext.fillRect(54 + index * 112, 468 - value * 52, 56, value * 52);
-    });
-    const screenTexture = new THREE.CanvasTexture(screenCanvas);
-    screenTexture.colorSpace = THREE.SRGBColorSpace;
-    const screenMaterial = new THREE.MeshBasicMaterial({ map: screenTexture });
-    const screenGeometry = new THREE.PlaneGeometry(2.55, 1.48);
-    const screenMesh = new THREE.Mesh(screenGeometry, screenMaterial);
-    screenMesh.position.set(0, 0.32, -0.32);
-    profileWorkspace.add(screenMesh);
-    screenMesh.userData = { type: "profile", data: PERSONAL_INFO };
-    interactiveCards.push(screenMesh);
-    trackResource(screenMesh, screenMaterial, screenGeometry, screenTexture);
-
-    const screenGlowGeometry = new THREE.PlaneGeometry(2.7, 1.62);
-    const screenGlow = new THREE.Mesh(screenGlowGeometry, matScreenGlow);
-    screenGlow.position.set(0, 0.32, -0.22);
-    profileWorkspace.add(screenGlow);
-    trackResource(screenGlow, matScreenGlow, screenGlowGeometry);
-
-    const keyboardMaterial = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.48, metalness: 0.4 });
-    createBox(1.55, 0.08, 0.48, -0.15, -0.66, 0.46, keyboardMaterial, profileWorkspace);
-    const signalMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff5c35,
-      emissive: 0xff5c35,
-      emissiveIntensity: 0.8,
-      roughness: 0.3,
-    });
-    [0.28, 0.46, 0.34, 0.58].forEach((height, index) => {
-      const signal = createBox(0.11, height, 0.11, 1.05 + index * 0.22, -0.72 + height / 2, 0.42, signalMaterial, profileWorkspace);
-      profileSignalMeshes.push({ mesh: signal, baseHeight: height, phase: index * 0.8 });
-    });
-
-    // --- 7. 3D Architectural Wall Typography ---
-    const makeWallTextPlane = (text, widthPx, color, fontSize = 72) => {
+    // Helper to generate dynamic canvas texture
+    const makeTextCanvasTexture = (drawFn, w = 1024, h = 512) => {
       const canvas = document.createElement("canvas");
-      canvas.width = widthPx;
-      canvas.height = 180;
+      canvas.width = w;
+      canvas.height = h;
       const ctx = canvas.getContext("2d");
-      ctx.font = `900 ${fontSize}px "Inter Tight", "Helvetica Neue", sans-serif`;
-      ctx.fillStyle = color;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(text, canvas.width / 2, 90);
-
+      drawFn(ctx, w, h);
       const texture = new THREE.CanvasTexture(canvas);
       texture.colorSpace = THREE.SRGBColorSpace;
-      const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        depthWrite: false,
-      });
-      const planeGeo = new THREE.PlaneGeometry(widthPx / 135, 1.25);
-      const plane = new THREE.Mesh(planeGeo, material);
-      masterStudio.add(plane);
-      trackResource(plane, material, planeGeo, texture);
-      return plane;
+      return { texture, canvas };
     };
 
-    const heroName = makeWallTextPlane("PAVAN KUMAR VERMA", 1500, "#ffffff", 84);
-    heroName.position.set(0, 1.6, -2.25);
-    heroWallElements.push(heroName);
-    const heroDiscipline = makeWallTextPlane("DATA SCIENCE & ARTIFICIAL INTELLIGENCE", 1400, "rgba(255,255,255,0.65)", 56);
-    heroDiscipline.position.set(0, 0.65, -2.24);
-    heroWallElements.push(heroDiscipline);
-    const heroSystems = makeWallTextPlane("PRODUCTION MACHINE LEARNING & FULL-STACK SYSTEMS", 1400, "#e11d48", 52);
-    heroSystems.position.set(0, -0.3, -2.23);
-    heroWallElements.push(heroSystems);
+    // --- 6. ZONE 1: GRAND ENTRANCE FOYER ---
+    const entranceGroup = new THREE.Group();
+    entranceGroup.position.set(0, 0, 8.5);
+    digitalStudio.add(entranceGroup);
 
-    // --- 8. THE 3D BEHIND-THE-SOFA INTERACTIVE GALLERIES (TEXTURED 3D PLANES) ---
-    // Function to generate dynamic high-res card textures for 3D meshes
-    const create3DCardTexture = ({
-      category,
-      title,
-      tagline,
-      chips = [],
-      accentColor = "#e11d48",
-      metric = "",
-      type = "project",
-    }) => {
+    // Architectural Entrance Portal
+    createBox(0.35, 5.2, 0.35, -4.8, 0.8, 0, matBrushedBrass, entranceGroup);
+    createBox(0.35, 5.2, 0.35, 4.8, 0.8, 0, matBrushedBrass, entranceGroup);
+    createBox(10.0, 0.35, 0.35, 0, 3.4, 0, matBrushedBrass, entranceGroup);
+
+    // Entrance portal glow point light
+    const portalGlow = new THREE.PointLight(0xe11d48, 3.5, 12);
+    portalGlow.position.set(0, 3.4, 1.0);
+    entranceGroup.add(portalGlow);
+
+    // Cyan floor glow under portal
+    const portalFloorGlow = new THREE.PointLight(0x00f0ff, 2.2, 8);
+    portalFloorGlow.position.set(0, -1.0, 0);
+    entranceGroup.add(portalFloorGlow);
+
+    // Floating Illuminated Entrance Typography
+    const { texture: entranceTex } = makeTextCanvasTexture((ctx, w, h) => {
+      ctx.fillStyle = "rgba(10, 10, 14, 0)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.textAlign = "center";
+
+      ctx.fillStyle = "#e11d48";
+      ctx.font = '700 24px "JetBrains Mono", monospace';
+      ctx.fillText("PAVAN KUMAR VERMA // 2026", w / 2, 70);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '900 68px "Inter Tight", sans-serif';
+      ctx.fillText("I BUILD INTELLIGENT SYSTEMS", w / 2, 175);
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+      ctx.font = '400 26px "Inter Tight", sans-serif';
+      ctx.fillText("AI Engineer • Data Science Enthusiast • Full-Stack Developer", w / 2, 245);
+
+      ctx.fillStyle = "#00f0ff";
+      ctx.font = '600 22px "JetBrains Mono", monospace';
+      ctx.fillText("▼ EXPLORE DIGITAL STUDIO / SCROLL TO MOVE", w / 2, 360);
+    }, 1200, 480);
+
+    const entrancePlaneMat = new THREE.MeshBasicMaterial({
+      map: entranceTex,
+      transparent: true,
+      depthWrite: false,
+    });
+    const entrancePlaneGeo = new THREE.PlaneGeometry(8.5, 3.4);
+    const entrancePlane = new THREE.Mesh(entrancePlaneGeo, entrancePlaneMat);
+    entrancePlane.position.set(0, 1.2, 0.1);
+    entranceGroup.add(entrancePlane);
+    trackResource(entrancePlane, entrancePlaneMat, entrancePlaneGeo, entranceTex);
+
+    // --- 7. ZONE 2: LIVING ROOM & ABOUT LOUNGE ---
+    const livingGroup = new THREE.Group();
+    livingGroup.position.set(0, 0, 3.8);
+    digitalStudio.add(livingGroup);
+
+    // Real 3D sofa replaced by Sketchfab model embed in the room
+    const sofaGroup = new THREE.Group();
+    sofaGroup.position.set(0, -0.8, 0.6);
+    livingGroup.add(sofaGroup);
+
+    const sofaPlate = new THREE.Mesh(
+      new THREE.PlaneGeometry(4.8, 2.7),
+      new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0.96,
+        side: THREE.DoubleSide,
+      })
+    );
+    sofaPlate.position.set(0, 0.2, -0.15);
+    sofaPlate.rotation.y = Math.PI;
+    sofaGroup.add(sofaPlate);
+
+    const sofaOverlay = document.createElement("iframe");
+    sofaOverlay.title = "Sofa";
+    sofaOverlay.setAttribute("frameborder", "0");
+    sofaOverlay.setAttribute("allowfullscreen", "true");
+    sofaOverlay.setAttribute("mozallowfullscreen", "true");
+    sofaOverlay.setAttribute("webkitallowfullscreen", "true");
+    sofaOverlay.setAttribute(
+      "allow",
+      "autoplay; fullscreen; xr-spatial-tracking"
+    );
+    sofaOverlay.src = "https://sketchfab.com/models/f426165b35b74577926b1ab44f3382ab/embed";
+    sofaOverlay.style.width = "100%";
+    sofaOverlay.style.height = "100%";
+    sofaOverlay.style.border = "0";
+    sofaOverlay.style.background = "transparent";
+
+    const sofaTexture = new THREE.CanvasTexture(document.createElement("canvas"));
+    sofaTexture.image.width = 1024;
+    sofaTexture.image.height = 768;
+    sofaTexture.needsUpdate = true;
+    sofaPlate.material.map = sofaTexture;
+    sofaPlate.material.needsUpdate = true;
+
+    const sofaImageLoader = new Image();
+    sofaImageLoader.crossOrigin = "anonymous";
+    sofaImageLoader.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = 640;
-      canvas.height = 420;
+      canvas.width = 1024;
+      canvas.height = 768;
       const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#0b0f10";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(sofaImageLoader, 0, 0, canvas.width, canvas.height);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.needsUpdate = true;
+      sofaPlate.material.map = texture;
+      sofaPlate.material.needsUpdate = true;
+    };
+    sofaImageLoader.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' width='1024' height='768'>
+        <defs>
+          <linearGradient id='bg' x1='0' x2='1' y1='0' y2='1'>
+            <stop offset='0%' stop-color='#10181a'/>
+            <stop offset='100%' stop-color='#0b0f10'/>
+          </linearGradient>
+        </defs>
+        <rect width='1024' height='768' fill='url(#bg)'/>
+        <rect x='120' y='220' width='780' height='270' rx='30' fill='#d5c1a1' opacity='0.92'/>
+        <rect x='185' y='120' width='650' height='170' rx='25' fill='#c6af8a' opacity='0.9'/>
+        <rect x='160' y='450' width='120' height='120' rx='16' fill='#b79763'/>
+        <rect x='740' y='450' width='120' height='120' rx='16' fill='#b79763'/>
+        <rect x='290' y='480' width='140' height='110' rx='18' fill='#d9c9a3'/>
+        <rect x='590' y='480' width='140' height='110' rx='18' fill='#d9c9a3'/>
+        <circle cx='164' cy='185' r='18' fill='#e9dcc2'/>
+        <circle cx='860' cy='185' r='18' fill='#e9dcc2'/>
+        <rect x='450' y='70' width='120' height='170' rx='14' fill='#b99968' opacity='0.95'/>
+      </svg>
+    `);
 
-      // Card Background with dark glass gradient
-      const grad = ctx.createLinearGradient(0, 0, 640, 420);
-      grad.addColorStop(0, "#161618");
-      grad.addColorStop(1, "#0a0a0c");
-      ctx.fillStyle = grad;
-      ctx.roundRect(10, 10, 620, 400, 24);
+    // Round Walnut Coffee Table
+    const tableTopGeo = new THREE.CylinderGeometry(1.3, 1.3, 0.12, 36);
+    const tableTopMesh = new THREE.Mesh(tableTopGeo, matWalnutWood);
+    tableTopMesh.position.set(0, -1.15, 2.4);
+    livingGroup.add(tableTopMesh);
+    trackResource(tableTopMesh, matWalnutWood, tableTopGeo);
+    const tableLegGeo = new THREE.CylinderGeometry(0.12, 0.18, 0.65, 16);
+    const tableLegMesh = new THREE.Mesh(tableLegGeo, matBrushedBrass);
+    tableLegMesh.position.set(0, -1.48, 2.4);
+    livingGroup.add(tableLegMesh);
+    trackResource(tableLegMesh, matBrushedBrass, tableLegGeo);
+
+    // Interactive Identity Plaque / About Tablet on the table
+    const { texture: identityTex } = makeTextCanvasTexture((ctx, w, h) => {
+      ctx.fillStyle = "#0c0c10";
+      ctx.roundRect(16, 16, w - 32, h - 32, 24);
       ctx.fill();
-
-      // Border with accent glow
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = accentColor;
-      ctx.roundRect(10, 10, 620, 400, 24);
+      ctx.strokeStyle = "#e11d48";
+      ctx.lineWidth = 6;
+      ctx.roundRect(16, 16, w - 32, h - 32, 24);
       ctx.stroke();
 
-      // Top Tag Badge
-      ctx.fillStyle = accentColor;
-      ctx.roundRect(36, 36, 200, 32, 8);
+      ctx.fillStyle = "#e11d48";
+      ctx.font = '700 24px "JetBrains Mono", monospace';
+      ctx.fillText("IDENTITY // PROFILE", 48, 72);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '900 42px "Inter Tight", sans-serif';
+      ctx.fillText("Pavan Kumar Verma", 48, 135);
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.font = '400 24px "Inter Tight", sans-serif';
+      ctx.fillText("B.Tech CSE — Artificial Intelligence & Data Science", 48, 185);
+      ctx.fillText("AKS University, Satna • Class of 2027", 48, 225);
+
+      ctx.fillStyle = "#00f0ff";
+      ctx.font = '700 22px "JetBrains Mono", monospace';
+      ctx.fillText("PRIMARY STRENGTH: PYTHON", 48, 285);
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.font = '400 20px "JetBrains Mono", monospace';
+      ctx.fillText("Focused on practical AI, real-world ML & full-stack systems.", 48, 335);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '700 18px "JetBrains Mono", monospace';
+      ctx.fillText("▶ CLICK TO INSPECT BIO & STORY", 48, 410);
+    }, 840, 480);
+
+    const identityPlaqueGeo = new THREE.PlaneGeometry(1.6, 0.95);
+    const identityPlaqueMat = new THREE.MeshStandardMaterial({
+      map: identityTex,
+      roughness: 0.35,
+      metalness: 0.15,
+      side: THREE.DoubleSide,
+    });
+    const identityPlaque = new THREE.Mesh(identityPlaqueGeo, identityPlaqueMat);
+    identityPlaque.position.set(0, -1.06, 2.38);
+    identityPlaque.rotation.x = -Math.PI / 2 + 0.15;
+    identityPlaque.userData = {
+      type: "identity",
+      data: {
+        id: "about",
+        title: "Pavan Kumar Verma",
+        category: "About Me",
+        description: PERSONAL_INFO.summary,
+        education: PERSONAL_INFO.education,
+        interests: PERSONAL_INFO.interests,
+      },
+      defaultPos: identityPlaque.position.clone(),
+      defaultRot: identityPlaque.rotation.clone(),
+    };
+    livingGroup.add(identityPlaque);
+    interactiveObjects.push(identityPlaque);
+    trackResource(identityPlaque, identityPlaqueMat, identityPlaqueGeo, identityTex);
+
+    // Designer Floor Lamp
+    const lampStemGeo = new THREE.CylinderGeometry(0.04, 0.04, 3.4, 16);
+    const lampStem = new THREE.Mesh(lampStemGeo, matBrushedBrass);
+    lampStem.position.set(3.4, 0.1, 0.8);
+    livingGroup.add(lampStem);
+    trackResource(lampStem, matBrushedBrass, lampStemGeo);
+
+    const lampShadeGeo = new THREE.ConeGeometry(0.45, 0.65, 24, 1, true);
+    const lampShadeMat = new THREE.MeshStandardMaterial({
+      color: 0xe11d48,
+      emissive: 0xe11d48,
+      emissiveIntensity: 0.85,
+      roughness: 0.2,
+      side: THREE.DoubleSide,
+    });
+    const lampShade = new THREE.Mesh(lampShadeGeo, lampShadeMat);
+    lampShade.position.set(3.4, 1.7, 0.8);
+    livingGroup.add(lampShade);
+    trackResource(lampShade, lampShadeMat, lampShadeGeo);
+
+    // --- 8. ZONE 3: DEVELOPER WORKBENCH (LEFT WING) ---
+    const devGroup = new THREE.Group();
+    devGroup.position.set(-5.4, 0, -0.6);
+    digitalStudio.add(devGroup);
+
+    // Solid Wood Developer Desk
+    createBox(4.4, 0.16, 2.0, 0, -0.85, 0, matWalnutWood, devGroup);
+    [-1.8, 1.8].forEach((x) => {
+      createBox(0.12, 1.0, 0.12, x, -1.35, -0.75, matBrushedBrass, devGroup);
+      createBox(0.12, 1.0, 0.12, x, -1.35, 0.75, matBrushedBrass, devGroup);
+    });
+
+    // Monitor 1: Code Editor (Live Python Syntax)
+    const { texture: codeEditorTex } = makeTextCanvasTexture((ctx, w, h) => {
+      ctx.fillStyle = "#0a0a0f";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "#1e1e24";
+      ctx.fillRect(0, 0, w, 42);
+
+      // Window controls
+      ctx.fillStyle = "#ef4444";
+      ctx.beginPath();
+      ctx.arc(24, 21, 6, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "#ffffff";
-      ctx.font = '700 16px "JetBrains Mono", monospace';
-      ctx.fillText(category.toUpperCase().slice(0, 20), 48, 58);
+      ctx.fillStyle = "#f59e0b";
+      ctx.beginPath();
+      ctx.arc(44, 21, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#10b981";
+      ctx.beginPath();
+      ctx.arc(64, 21, 6, 0, Math.PI * 2);
+      ctx.fill();
 
-      // Metric Badge (if present)
-      if (metric) {
-        ctx.fillStyle = "rgba(255,255,255,0.12)";
-        ctx.roundRect(400, 36, 200, 32, 8);
-        ctx.fill();
-        ctx.fillStyle = "#00f0ff";
-        ctx.font = '700 15px "JetBrains Mono", monospace';
-        ctx.fillText(metric.slice(0, 18), 415, 58);
-      }
+      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.font = '500 16px "JetBrains Mono", monospace';
+      ctx.fillText("engine_core.py — Pavan's AI Workspace", 96, 27);
 
-      // Title
-      ctx.fillStyle = "#ffffff";
-      ctx.font = '800 30px "Inter Tight", sans-serif';
-      const words = title.split(" ");
-      let line1 = "";
-      let line2 = "";
-      words.forEach((w) => {
-        if ((line1 + w).length < 24) line1 += w + " ";
-        else line2 += w + " ";
+      const codeLines = [
+        { t: "import torch", c: "#e11d48" },
+        { t: "from fastapi import FastAPI, BackgroundTasks", c: "#e11d48" },
+        { t: "from ultralytics import YOLO", c: "#e11d48" },
+        { t: "", c: "" },
+        { t: "class IntelligentSystemArchitect:", c: "#00f0ff" },
+        { t: "    def __init__(self, engineer='Pavan Kumar Verma'):", c: "#ffffff" },
+        { t: "        self.primary_weapon = 'Python'", c: "#10b981" },
+        { t: "        self.graduation_year = 2027", c: "#f59e0b" },
+        { t: "        self.stack = ['FastAPI', 'React', 'Docker', 'YOLO']", c: "#a855f7" },
+        { t: "", c: "" },
+        { t: "    async def deploy_production_intelligence(self):", c: "#00f0ff" },
+        { t: "        await self.execute_sales_forecast()", c: "#ffffff" },
+        { t: "        await self.run_mask_detection_yolo()", c: "#ffffff" },
+        { t: "        return {'status': 'Delivering Real-World Impact'}", c: "#10b981" },
+      ];
+
+      codeLines.forEach((line, idx) => {
+        ctx.fillStyle = "rgba(255,255,255,0.25)";
+        ctx.font = '400 16px "JetBrains Mono", monospace';
+        ctx.fillText((idx + 1).toString().padStart(2, "0"), 24, 75 + idx * 28);
+        ctx.fillStyle = line.c || "#ffffff";
+        ctx.fillText(line.t, 64, 75 + idx * 28);
       });
-      ctx.fillText(line1.trim(), 36, 120);
-      if (line2) ctx.fillText(line2.trim(), 36, 160);
+    }, 720, 520);
 
-      // Tagline
-      ctx.fillStyle = "rgba(255,255,255,0.65)";
-      ctx.font = '400 18px "Inter Tight", sans-serif';
-      ctx.fillText(tagline.slice(0, 52), 36, 210);
-      if (tagline.length > 52) {
-        ctx.fillText(tagline.slice(52, 105), 36, 235);
-      }
+    const codeMonFrame = createBox(2.4, 1.5, 0.12, -0.95, 0.25, -0.4, matScreenObsidian, devGroup);
+    createBox(0.12, 0.5, 0.12, -0.95, -0.5, -0.4, matScreenObsidian, devGroup);
+    createBox(0.7, 0.05, 0.35, -0.95, -0.74, -0.4, matScreenObsidian, devGroup);
 
-      // Chips
-      let chipX = 36;
-      chips.slice(0, 4).forEach((chip) => {
-        ctx.fillStyle = "rgba(255,255,255,0.08)";
-        ctx.roundRect(chipX, 280, chip.length * 12 + 24, 34, 6);
+    const codeMonPlaneGeo = new THREE.PlaneGeometry(2.25, 1.35);
+    const codeMonPlaneMat = new THREE.MeshBasicMaterial({ map: codeEditorTex });
+    const codeMonPlane = new THREE.Mesh(codeMonPlaneGeo, codeMonPlaneMat);
+    codeMonPlane.position.set(-0.95, 0.25, -0.32);
+    devGroup.add(codeMonPlane);
+    codeMonPlane.userData = {
+      type: "skill-workbench",
+      data: {
+        title: "Developer Environment",
+        category: "Workbench",
+        description: "Python, FastAPI, React, Docker, and full-stack software development workflows.",
+      },
+    };
+    interactiveObjects.push(codeMonPlane);
+    trackResource(codeMonPlane, codeMonPlaneMat, codeMonPlaneGeo, codeEditorTex);
+
+    // Monitor 2: Live AI & Model Terminal
+    const { texture: terminalTex } = makeTextCanvasTexture((ctx, w, h) => {
+      ctx.fillStyle = "#05080c";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(0, 240, 255, 0.12)";
+      ctx.fillRect(0, 0, w, 38);
+
+      ctx.fillStyle = "#00f0ff";
+      ctx.font = '700 16px "JetBrains Mono", monospace';
+      ctx.fillText("bash: ai-cluster — pavan@aks-satna:~", 24, 25);
+
+      const logs = [
+        "[INFO] Initializing PyTorch CUDA acceleration... Ready",
+        "[INFO] Loading YOLOv8 custom weights: weights/best_mask.pt",
+        "[STATUS] Classes detected: with_mask | without_mask | incorrect",
+        "[API] FastAPI server running at http://0.0.0.0:8000",
+        "[DOCKER] Container 'samarveer-backend' healthy [port 8080]",
+        "[DATA] Sales Forecast inference latency: 42ms",
+        "[METRICS] Precision: 0.94 | Recall: 0.91 | mAP50: 0.952",
+        "pavan@cluster:~$ _",
+      ];
+      logs.forEach((log, i) => {
+        ctx.fillStyle = i === logs.length - 1 ? "#10b981" : "rgba(255, 255, 255, 0.75)";
+        ctx.font = '400 15px "JetBrains Mono", monospace';
+        ctx.fillText(log, 24, 75 + i * 32);
+      });
+    }, 640, 420);
+
+    createBox(1.9, 1.3, 0.12, 1.25, 0.2, -0.3, matScreenObsidian, devGroup);
+    createBox(0.1, 0.5, 0.1, 1.25, -0.5, -0.3, matScreenObsidian, devGroup);
+    createBox(0.6, 0.05, 0.3, 1.25, -0.74, -0.3, matScreenObsidian, devGroup);
+
+    const termMonPlaneGeo = new THREE.PlaneGeometry(1.78, 1.18);
+    const termMonPlaneMat = new THREE.MeshBasicMaterial({ map: terminalTex });
+    const termMonPlane = new THREE.Mesh(termMonPlaneGeo, termMonPlaneMat);
+    termMonPlane.position.set(1.25, 0.2, -0.22);
+    devGroup.add(termMonPlane);
+    interactiveObjects.push(termMonPlane);
+    termMonPlane.userData = {
+      type: "skill-workbench",
+      data: {
+        title: "AI Terminal & Diagnostics",
+        category: "Workbench",
+        description: "Real-time edge model inference, container pipelines, and predictive analytics.",
+      },
+    };
+    trackResource(termMonPlane, termMonPlaneMat, termMonPlaneGeo, terminalTex);
+
+    // Mechanical Keyboard & Desk Accessories
+    createBox(1.4, 0.06, 0.42, 0, -0.75, 0.3, matObsidianWall, devGroup);
+    createBox(0.24, 0.04, 0.32, 1.0, -0.75, 0.3, matObsidianWall, devGroup);
+
+    // 3D Interactive Skill Polyhedra Floating Around Desk
+    const skillNodesGroup = new THREE.Group();
+    skillNodesGroup.position.set(0, 1.2, 0.2);
+    devGroup.add(skillNodesGroup);
+
+    const polyGeos = [
+      new THREE.IcosahedronGeometry(0.26, 0),
+      new THREE.OctahedronGeometry(0.28, 0),
+      new THREE.DodecahedronGeometry(0.25, 0),
+      new THREE.TetrahedronGeometry(0.3, 0),
+    ];
+
+    const coreSkills = ["Python", "FastAPI", "React", "Docker", "MySQL", "Git"];
+    const activeSkillMeshes = [];
+
+    coreSkills.forEach((skillName, i) => {
+      const angle = (i / coreSkills.length) * Math.PI * 2;
+      const radius = 1.9;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * 0.45;
+      const z = Math.sin(angle) * 0.7;
+
+      const geo = polyGeos[i % polyGeos.length];
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: 0x14141c,
+        emissive: i % 2 === 0 ? 0x00f0ff : 0xe11d48,
+        emissiveIntensity: 0.65,
+        wireframe: true,
+        roughness: 0.2,
+      });
+
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(x, y, z);
+      mesh.userData = {
+        type: "skill",
+        data: {
+          title: skillName,
+          category: "Core Skill",
+          name: skillName,
+          description: `Primary skill in Pavan's development toolkit.`,
+        },
+        rotSpeedX: 0.012 + i * 0.004,
+        rotSpeedY: 0.015 + i * 0.003,
+        defaultPos: mesh.position.clone(),
+        defaultRot: mesh.rotation.clone(),
+      };
+      skillNodesGroup.add(mesh);
+      interactiveObjects.push(mesh);
+      activeSkillMeshes.push(mesh);
+      trackResource(mesh, mat, geo);
+    });
+
+    dynamicAnimators.push((time) => {
+      activeSkillMeshes.forEach((mesh) => {
+        mesh.rotation.x += mesh.userData.rotSpeedX;
+        mesh.rotation.y += mesh.userData.rotSpeedY;
+      });
+    });
+
+    // --- 9. ZONE 4: AI & COMPUTER VISION LAB (RIGHT WING) ---
+    const aiLabGroup = new THREE.Group();
+    aiLabGroup.position.set(5.4, 0, -0.6);
+    digitalStudio.add(aiLabGroup);
+
+    // AI Lab Console Bench
+    createBox(4.4, 0.16, 2.0, 0, -0.85, 0, matObsidianWall, aiLabGroup);
+    [-1.8, 1.8].forEach((x) => {
+      createBox(0.12, 1.0, 0.12, x, -1.35, -0.75, matBrushedBrass, aiLabGroup);
+      createBox(0.12, 1.0, 0.12, x, -1.35, 0.75, matBrushedBrass, aiLabGroup);
+    });
+
+    // Large YOLO Computer Vision Scanner Display
+    const { texture: yoloScreenTex } = makeTextCanvasTexture((ctx, w, h) => {
+      ctx.fillStyle = "#06090e";
+      ctx.fillRect(0, 0, w, h);
+
+      // Vision Header
+      ctx.fillStyle = "#10b981";
+      ctx.font = '700 20px "JetBrains Mono", monospace';
+      ctx.fillText("YOLOv8 REAL-TIME DETECTION SCANNER // LIVE STREAM", 32, 40);
+
+      // Video frame simulation background
+      ctx.strokeStyle = "rgba(16, 185, 129, 0.35)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(32, 60, w - 64, h - 100);
+
+      // Bounding Box 1: with_mask (Green)
+      ctx.strokeStyle = "#10b981";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(80, 110, 180, 220);
+      ctx.fillStyle = "#10b981";
+      ctx.fillRect(80, 80, 180, 30);
+      ctx.fillStyle = "#000000";
+      ctx.font = '700 16px "JetBrains Mono", monospace';
+      ctx.fillText("with_mask: 0.98", 90, 102);
+
+      // Bounding Box 2: incorrect_mask (Amber)
+      ctx.strokeStyle = "#f59e0b";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(320, 130, 170, 210);
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillRect(320, 100, 190, 30);
+      ctx.fillStyle = "#000000";
+      ctx.font = '700 16px "JetBrains Mono", monospace';
+      ctx.fillText("incorrect_mask: 0.91", 328, 122);
+
+      // Bounding Box 3: without_mask (Rose)
+      ctx.strokeStyle = "#e11d48";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(550, 120, 180, 230);
+      ctx.fillStyle = "#e11d48";
+      ctx.fillRect(550, 90, 190, 30);
+      ctx.fillStyle = "#000000";
+      ctx.font = '700 16px "JetBrains Mono", monospace';
+      ctx.fillText("without_mask: 0.95", 558, 112);
+
+      // Status Bar
+      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.font = '500 15px "JetBrains Mono", monospace';
+      ctx.fillText("LATENCY: 14.8ms | FPS: 60.0 | DEVICE: CUDA0 | RESOLUTION: 1920x1080", 40, h - 18);
+    }, 800, 480);
+
+    createBox(3.2, 2.0, 0.14, 0, 0.45, -0.4, matScreenObsidian, aiLabGroup);
+    createBox(0.18, 0.6, 0.18, 0, -0.45, -0.4, matScreenObsidian, aiLabGroup);
+    createBox(1.1, 0.06, 0.4, 0, -0.74, -0.4, matScreenObsidian, aiLabGroup);
+
+    const yoloScreenGeo = new THREE.PlaneGeometry(3.05, 1.85);
+    const yoloScreenMat = new THREE.MeshBasicMaterial({ map: yoloScreenTex });
+    const yoloScreenMesh = new THREE.Mesh(yoloScreenGeo, yoloScreenMat);
+    yoloScreenMesh.position.set(0, 0.45, -0.32);
+    aiLabGroup.add(yoloScreenMesh);
+    yoloScreenMesh.userData = {
+      type: "project",
+      data: PROJECTS.find((p) => p.id === "face-mask-detection") || PROJECTS[1],
+      defaultPos: yoloScreenMesh.position.clone(),
+      defaultRot: yoloScreenMesh.rotation.clone(),
+    };
+    interactiveObjects.push(yoloScreenMesh);
+    trackResource(yoloScreenMesh, yoloScreenMat, yoloScreenGeo, yoloScreenTex);
+
+    // Floating Neural Network Nodes Hologram
+    const neuralGroup = new THREE.Group();
+    neuralGroup.position.set(0, 1.8, 0.4);
+    aiLabGroup.add(neuralGroup);
+
+    const neuralSpheres = [];
+    for (let i = 0; i < 9; i++) {
+      const sGeo = new THREE.SphereGeometry(0.1, 16, 16);
+      const sMat = new THREE.MeshStandardMaterial({
+        color: 0x00f0ff,
+        emissive: 0x00f0ff,
+        emissiveIntensity: 0.9,
+        roughness: 0.2,
+      });
+      const sMesh = new THREE.Mesh(sGeo, sMat);
+      const layer = Math.floor(i / 3);
+      const row = (i % 3) - 1;
+      sMesh.position.set((layer - 1) * 0.9, row * 0.55, (Math.random() - 0.5) * 0.3);
+      neuralGroup.add(sMesh);
+      neuralSpheres.push(sMesh);
+      trackResource(sMesh, sMat, sGeo);
+    }
+
+    dynamicAnimators.push((time) => {
+      neuralSpheres.forEach((s, idx) => {
+        s.position.y += Math.sin(time * 2 + idx) * 0.002;
+      });
+    });
+
+    // --- 10. ZONE 5: PROJECT EXHIBITION GALLERY (THE 6 CORE PROJECTS) ---
+    const galleryGroup = new THREE.Group();
+    galleryGroup.position.set(0, 0.4, -2.4);
+    digitalStudio.add(galleryGroup);
+
+    // Create 6 Dedicated Project Frames (2 rows of 3)
+    const projectMeshes = [];
+
+    const createProjectCardTexture = (proj) => {
+      return makeTextCanvasTexture((ctx, w, h) => {
+        // Gradient background
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, "#15151c");
+        grad.addColorStop(1, "#09090c");
+        ctx.fillStyle = grad;
+        ctx.roundRect(14, 14, w - 28, h - 28, 24);
+        ctx.fill();
+
+        // Border glow
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = proj.accent || "#e11d48";
+        ctx.roundRect(14, 14, w - 28, h - 28, 24);
+        ctx.stroke();
+
+        // Category Tag
+        ctx.fillStyle = proj.accent || "#e11d48";
+        ctx.roundRect(42, 42, 240, 36, 8);
         ctx.fill();
         ctx.fillStyle = "#ffffff";
-        ctx.font = '600 15px "JetBrains Mono", monospace';
-        ctx.fillText(chip, chipX + 12, 302);
-        chipX += chip.length * 12 + 34;
-      });
+        ctx.font = '700 17px "JetBrains Mono", monospace';
+        ctx.fillText(proj.category.toUpperCase().slice(0, 24), 54, 66);
 
-      // Bottom CTA bar
-      ctx.fillStyle = "#ffffff";
-      ctx.font = '700 16px "JetBrains Mono", monospace';
-      ctx.fillText("▶ CLICK TO INSPECT 3D SPECS", 36, 375);
+        // Project Number
+        ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+        ctx.font = '800 32px "Inter Tight", sans-serif';
+        ctx.fillText(`0${proj.number || 1}`, w - 90, 70);
 
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
+        // Title
+        ctx.fillStyle = "#ffffff";
+        ctx.font = '800 36px "Inter Tight", sans-serif';
+        const titleWords = proj.title.split(" ");
+        let line1 = "";
+        let line2 = "";
+        titleWords.forEach((word) => {
+          if ((line1 + word).length < 20) line1 += word + " ";
+          else line2 += word + " ";
+        });
+        ctx.fillText(line1.trim(), 42, 140);
+        if (line2) ctx.fillText(line2.trim(), 42, 185);
+
+        // Tagline
+        ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+        ctx.font = '400 20px "Inter Tight", sans-serif';
+        ctx.fillText((proj.tagline || proj.description).slice(0, 48), 42, 235);
+        if ((proj.tagline || proj.description).length > 48) {
+          ctx.fillText((proj.tagline || proj.description).slice(48, 98), 42, 262);
+        }
+
+        // Tech Chips
+        let chipX = 42;
+        (proj.tech || []).slice(0, 4).forEach((t) => {
+          ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+          ctx.roundRect(chipX, 305, t.length * 13 + 26, 36, 6);
+          ctx.fill();
+          ctx.fillStyle = "#00f0ff";
+          ctx.font = '600 16px "JetBrains Mono", monospace';
+          ctx.fillText(t, chipX + 13, 329);
+          chipX += t.length * 13 + 38;
+        });
+
+        // Bottom CTA
+        ctx.fillStyle = "#ffffff";
+        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.fillText("▶ CLICK TO INSPECT PROJECT SPECS", 42, 400);
+      }, 760, 460);
     };
 
-    // A. 3D Projects Showcase (Curved 3D spatial arc behind the sofa)
-    const project3DGroup = new THREE.Group();
-    project3DGroup.position.set(0, 0.75, -1.45);
-    masterStudio.add(project3DGroup);
-
     PROJECTS.forEach((proj, idx) => {
-      const column = idx % 3;
-      const row = Math.floor(idx / 3);
-      const x = (column - 1) * 3.05;
-      const y = 1.15 - row * 2.15;
+      const col = idx % 3; // 0, 1, 2
+      const row = Math.floor(idx / 3); // 0, 1
+      const x = (col - 1) * 3.4;
+      const y = 1.05 - row * 2.2;
       const z = 0;
 
-      const texture = create3DCardTexture({
-        category: proj.category || "AI Project",
-        title: proj.title,
-        tagline: proj.tagline || proj.description,
-        chips: proj.tech || [],
-        accentColor: proj.accent || "#e11d48",
-        metric: proj.metrics ? Object.values(proj.metrics)[0] : "",
-        type: "project",
-      });
+      const { texture } = createProjectCardTexture(proj);
 
-      const cardGeo = new THREE.PlaneGeometry(2.6, 1.7);
+      const cardGeo = new THREE.PlaneGeometry(3.0, 1.85);
       const cardMat = new THREE.MeshStandardMaterial({
         map: texture,
-        roughness: 0.35,
-        metalness: 0.1,
+        roughness: 0.3,
+        metalness: 0.15,
         side: THREE.DoubleSide,
-        transparent: true,
       });
 
       const cardMesh = new THREE.Mesh(cardGeo, cardMat);
-      cardMesh.position.set(x, y, z + 0.09);
-      cardMesh.rotation.y = (column - 1) * -0.035;
+      cardMesh.position.set(x, y, z + 0.08);
+      cardMesh.rotation.y = (col - 1) * -0.04;
 
-      const frameMaterial = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(proj.accent || "#ff5c35"),
-        emissive: new THREE.Color(proj.accent || "#ff5c35"),
-        emissiveIntensity: 0.18,
-        roughness: 0.38,
-        metalness: 0.72,
-        transparent: true,
+      // Architectural Frame Trims
+      const frameMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(proj.accent || "#e11d48"),
+        emissive: new THREE.Color(proj.accent || "#e11d48"),
+        emissiveIntensity: 0.25,
+        roughness: 0.35,
+        metalness: 0.8,
       });
-      const frameDepth = z + 0.02;
-      const frameMeshes = [
-        createBox(2.9, 0.1, 0.12, x, y + 0.94, frameDepth, frameMaterial, project3DGroup),
-        createBox(2.9, 0.1, 0.12, x, y - 0.94, frameDepth, frameMaterial, project3DGroup),
-        createBox(0.1, 1.78, 0.12, x - 1.4, y, frameDepth, frameMaterial, project3DGroup),
-        createBox(0.1, 1.78, 0.12, x + 1.4, y, frameDepth, frameMaterial, project3DGroup),
-      ];
+      createBox(3.2, 0.08, 0.12, x, y + 0.98, z + 0.04, frameMat, galleryGroup);
+      createBox(3.2, 0.08, 0.12, x, y - 0.98, z + 0.04, frameMat, galleryGroup);
+      createBox(0.08, 1.95, 0.12, x - 1.55, y, z + 0.04, frameMat, galleryGroup);
+      createBox(0.08, 1.95, 0.12, x + 1.55, y, z + 0.04, frameMat, galleryGroup);
 
-      const backlightGeometry = new THREE.PlaneGeometry(2.78, 1.88);
-      const backlightMaterial = new THREE.MeshBasicMaterial({
-        color: new THREE.Color(proj.accent || "#ff5c35"),
+      // Backlight glow
+      const bgGeo = new THREE.PlaneGeometry(3.1, 1.95);
+      const bgMat = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(proj.accent || "#e11d48"),
         transparent: true,
         opacity: 0.08,
-        blending: THREE.AdditiveBlending,
         depthWrite: false,
       });
-      const backlight = new THREE.Mesh(backlightGeometry, backlightMaterial);
-      backlight.position.set(x, y, z - 0.01);
-      project3DGroup.add(backlight);
-      trackResource(backlight, backlightMaterial, backlightGeometry);
-      const projectMembers = [cardMesh, ...frameMeshes, backlight].map((mesh) => ({
-        mesh,
-        desktopPosition: mesh.position.clone(),
-        mobilePosition: new THREE.Vector3(mesh.position.x - x, mesh.position.y - y, mesh.position.z + 0.35),
-      }));
-      projectDisplayRecords.push({
-        id: proj.id,
-        index: idx,
-        cardMesh,
-        frameMeshes,
-        members: projectMembers,
-        backlightMaterial,
-      });
+      const bgMesh = new THREE.Mesh(bgGeo, bgMat);
+      bgMesh.position.set(x, y, z - 0.02);
+      galleryGroup.add(bgMesh);
+      trackResource(bgMesh, bgMat, bgGeo);
 
-      // Attach metadata for raycaster interaction
       cardMesh.userData = {
         type: "project",
         data: proj,
@@ -601,303 +951,212 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
         defaultRot: cardMesh.rotation.clone(),
       };
 
-      project3DGroup.add(cardMesh);
-      interactiveCards.push(cardMesh);
+      galleryGroup.add(cardMesh);
+      interactiveObjects.push(cardMesh);
+      projectMeshes.push({ cardMesh, proj });
       trackResource(cardMesh, cardMat, cardGeo, texture);
     });
 
-    // B. 3D Certifications Frame Wing (Right 3D Space)
-    const certs3DGroup = new THREE.Group();
-    certs3DGroup.position.set(4.5, 0.2, 0.2);
-    masterStudio.add(certs3DGroup);
+    // --- 11. ZONE 6: LIBRARY, CERTIFICATIONS & JOURNEY CORRIDOR ---
+    const libraryGroup = new THREE.Group();
+    libraryGroup.position.set(4.8, 0, 1.6);
+    digitalStudio.add(libraryGroup);
 
+    // Architectural Bookshelf
+    createBox(4.2, 4.4, 0.45, 0, 0.5, -2.4, matWalnutWood, libraryGroup);
+    [-0.8, 0.4, 1.6].forEach((shelfY) => {
+      createBox(4.0, 0.08, 0.42, 0, shelfY, -2.4, matWalnutWood, libraryGroup);
+    });
+
+    // Framed Verified Certifications on the Wall
     CERTIFICATIONS.forEach((cert, idx) => {
-      const texture = create3DCardTexture({
-        category: cert.tag || "Certification",
-        title: cert.title,
-        tagline: `Verified Cloud & AI Credential by ${cert.issuer}`,
-        chips: ["Microsoft", "Verified", "Azure AI"],
-        accentColor: "#38bdf8",
-        metric: cert.date || "Verified",
-        type: "cert",
-      });
+      const { texture: certTex } = makeTextCanvasTexture((ctx, w, h) => {
+        ctx.fillStyle = "#0c0d12";
+        ctx.roundRect(12, 12, w - 24, h - 24, 18);
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#38bdf8";
+        ctx.roundRect(12, 12, w - 24, h - 24, 18);
+        ctx.stroke();
 
-      const cardGeo = new THREE.PlaneGeometry(2.4, 1.55);
-      const cardMat = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.3,
-        metalness: 0.1,
-      });
-      const cardMesh = new THREE.Mesh(cardGeo, cardMat);
-      cardMesh.position.set((idx - 1) * 0.4, (idx - 1) * 1.6, -idx * 0.5);
-      cardMesh.rotation.y = -0.35;
+        ctx.fillStyle = "#38bdf8";
+        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.fillText(`VERIFIED CREDENTIAL // ${cert.issuer.toUpperCase()}`, 36, 52);
 
-      cardMesh.userData = {
-        type: "cert",
-        data: cert,
-        defaultPos: cardMesh.position.clone(),
-        defaultRot: cardMesh.rotation.clone(),
+        ctx.fillStyle = "#ffffff";
+        ctx.font = '700 24px "Inter Tight", sans-serif';
+        const words = cert.title.split(" ");
+        let l1 = "";
+        let l2 = "";
+        words.forEach((w) => {
+          if ((l1 + w).length < 24) l1 += w + " ";
+          else l2 += w + " ";
+        });
+        ctx.fillText(l1.trim(), 36, 110);
+        if (l2) ctx.fillText(l2.trim(), 36, 145);
+
+        ctx.fillStyle = "#10b981";
+        ctx.font = '600 16px "JetBrains Mono", monospace';
+        ctx.fillText("✓ VERIFIED CREDENTIAL • MICROSOFT / INDUSTRY", 36, 205);
+      }, 640, 260);
+
+      const certGeo = new THREE.PlaneGeometry(1.6, 0.72);
+      const certMat = new THREE.MeshStandardMaterial({ map: certTex, roughness: 0.3 });
+      const certMesh = new THREE.Mesh(certGeo, certMat);
+      certMesh.position.set(0, 1.8 - idx * 0.95, -2.15);
+      certMesh.userData = {
+        type: "certification",
+        data: {
+          title: cert.title,
+          category: "Verified Credential",
+          issuer: cert.issuer,
+          date: cert.date,
+        },
+        defaultPos: certMesh.position.clone(),
+        defaultRot: certMesh.rotation.clone(),
       };
-
-      certs3DGroup.add(cardMesh);
-      interactiveCards.push(cardMesh);
-      trackResource(cardMesh, cardMat, cardGeo, texture);
+      libraryGroup.add(certMesh);
+      interactiveObjects.push(certMesh);
+      trackResource(certMesh, certMat, certGeo, certTex);
     });
 
-    // C. 3D Key Achievements Metric Pods (Left 3D Space)
-    const metrics3DGroup = new THREE.Group();
-    metrics3DGroup.position.set(-4.5, 0.3, 0.2);
-    masterStudio.add(metrics3DGroup);
+    // --- 12. ZONE 7: PANORAMIC CONTACT STUDIO & HORIZON WINDOW ---
+    const contactGroup = new THREE.Group();
+    contactGroup.position.set(-4.2, 0, 1.4);
+    digitalStudio.add(contactGroup);
 
-    METRICS.forEach((m, idx) => {
-      const texture = create3DCardTexture({
-        category: "Achievement",
-        title: `${m.value} ${m.label}`,
-        tagline: m.detail,
-        chips: ["Verified Record", "Impact", "High Precision"],
-        accentColor: "#10b981",
-        metric: m.value,
-        type: "metric",
-      });
+    // Floor-to-ceiling Window Frame looking at horizon
+    const windowFrameMat = new THREE.MeshStandardMaterial({
+      color: 0x1a1921,
+      roughness: 0.4,
+      metalness: 0.7,
+    });
+    createBox(5.6, 5.0, 0.1, 0, 1.0, -2.5, matDarkGlass, contactGroup);
+    createBox(5.7, 0.12, 0.2, 0, 3.5, -2.48, windowFrameMat, contactGroup);
+    createBox(5.7, 0.12, 0.2, 0, -1.5, -2.48, windowFrameMat, contactGroup);
+    createBox(0.12, 5.0, 0.2, -2.8, 1.0, -2.48, windowFrameMat, contactGroup);
+    createBox(0.12, 5.0, 0.2, 2.8, 1.0, -2.48, windowFrameMat, contactGroup);
+    createBox(0.12, 5.0, 0.2, 0, 1.0, -2.48, windowFrameMat, contactGroup);
 
-      const cardGeo = new THREE.PlaneGeometry(2.3, 1.5);
-      const cardMat = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.3,
-        metalness: 0.1,
-      });
-      const cardMesh = new THREE.Mesh(cardGeo, cardMat);
-      cardMesh.position.set((idx - 1.5) * 0.3, (1.5 - idx) * 1.4, -idx * 0.4);
-      cardMesh.rotation.y = 0.38;
+    // Deep Horizon Background (Sky & Stars Plane beyond the glass)
+    const { texture: horizonTex } = makeTextCanvasTexture((ctx, w, h) => {
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "#05070d");
+      grad.addColorStop(0.65, "#0d1424");
+      grad.addColorStop(1, "#1e0b1c");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
 
-      cardMesh.userData = {
-        type: "metric",
-        data: m,
-        defaultPos: cardMesh.position.clone(),
-        defaultRot: cardMesh.rotation.clone(),
-      };
+      // Star field dots
+      ctx.fillStyle = "#ffffff";
+      for (let i = 0; i < 180; i++) {
+        const sx = Math.random() * w;
+        const sy = Math.random() * (h * 0.75);
+        const sr = Math.random() * 1.8 + 0.4;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }, 1024, 768);
 
-      metrics3DGroup.add(cardMesh);
-      interactiveCards.push(cardMesh);
-      trackResource(cardMesh, cardMat, cardGeo, texture);
+    const horizonGeo = new THREE.PlaneGeometry(9.0, 6.5);
+    const horizonMat = new THREE.MeshBasicMaterial({ map: horizonTex });
+    const horizonMesh = new THREE.Mesh(horizonGeo, horizonMat);
+    horizonMesh.position.set(0, 1.0, -3.8);
+    contactGroup.add(horizonMesh);
+    trackResource(horizonMesh, horizonMat, horizonGeo, horizonTex);
+
+    // Contact Table & Interactive Console
+    createBox(3.4, 0.14, 1.6, 0, -0.9, -0.6, matWalnutWood, contactGroup);
+    [-1.4, 1.4].forEach((x) => {
+      createBox(0.1, 0.9, 0.1, x, -1.35, -0.6, matBrushedBrass, contactGroup);
     });
 
-    const conferenceRoom = new THREE.Group();
-    conferenceRoom.position.set(4.3, -0.2, -1.1);
-    masterStudio.add(conferenceRoom);
+    const { texture: contactConsoleTex } = makeTextCanvasTexture((ctx, w, h) => {
+      ctx.fillStyle = "#0c0d12";
+      ctx.roundRect(14, 14, w - 28, h - 28, 24);
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#e11d48";
+      ctx.roundRect(14, 14, w - 28, h - 28, 24);
+      ctx.stroke();
 
-    const conferenceWallMaterial = new THREE.MeshStandardMaterial({
-      color: 0x171515,
-      roughness: 0.9,
-      metalness: 0.08,
-    });
-    const conferenceWoodMaterial = new THREE.MeshStandardMaterial({
-      color: 0x2a211b,
-      roughness: 0.56,
-      metalness: 0.16,
-    });
-    const conferenceMetalMaterial = new THREE.MeshStandardMaterial({
-      color: 0x9a6b3f,
-      roughness: 0.28,
-      metalness: 0.84,
-    });
-    const windowMaterial = new THREE.MeshStandardMaterial({
-      color: 0x172a35,
-      emissive: 0x102b37,
-      emissiveIntensity: 0.65,
-      roughness: 0.24,
-      metalness: 0.3,
-    });
+      ctx.fillStyle = "#e11d48";
+      ctx.font = '700 22px "JetBrains Mono", monospace';
+      ctx.fillText("OPEN DIRECT CHANNEL // REACH OUT", 42, 64);
 
-    createBox(7.5, 5.6, 0.16, 0, 1.0, -1.38, conferenceWallMaterial, conferenceRoom);
-    createBox(4.6, 0.16, 1.65, 0, -1.25, -0.2, conferenceWoodMaterial, conferenceRoom);
-    [-1.8, 1.8].forEach((x) => {
-      createBox(0.12, 1.25, 0.12, x, -1.82, -0.2, conferenceMetalMaterial, conferenceRoom);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '900 38px "Inter Tight", sans-serif';
+      ctx.fillText("LET'S BUILD SOMETHING INTELLIGENT.", 42, 130);
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+      ctx.font = '400 22px "Inter Tight", sans-serif';
+      ctx.fillText("Email: vermapavan9078@gmail.com", 42, 185);
+      ctx.fillText("Location: Satna, Madhya Pradesh, India", 42, 222);
+
+      ctx.fillStyle = "#00f0ff";
+      ctx.font = '700 20px "JetBrains Mono", monospace';
+      ctx.fillText("GITHUB: github.com/PavanvermaAKSU", 42, 280);
+      ctx.fillText("LINKEDIN: linkedin.com/in/pavan-kumar-verma-19a42127", 42, 315);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '700 18px "JetBrains Mono", monospace';
+      ctx.fillText("▶ CLICK TO OPEN CONTACT CONSOLE", 42, 385);
+    }, 840, 440);
+
+    const contactTabletGeo = new THREE.PlaneGeometry(1.8, 0.98);
+    const contactTabletMat = new THREE.MeshStandardMaterial({
+      map: contactConsoleTex,
+      roughness: 0.35,
+      metalness: 0.2,
+      side: THREE.DoubleSide,
     });
-    createBox(0.12, 1.25, 0.12, 0, -1.82, 0.45, conferenceMetalMaterial, conferenceRoom);
-    createBox(0.12, 1.25, 0.12, 0, -1.82, -0.85, conferenceMetalMaterial, conferenceRoom);
-
-    createBox(2.3, 1.75, 0.08, 3.05, 1.18, -1.28, windowMaterial, conferenceRoom);
-    createBox(0.08, 1.9, 0.12, 1.88, 1.18, -1.2, conferenceMetalMaterial, conferenceRoom);
-    createBox(0.08, 1.9, 0.12, 4.22, 1.18, -1.2, conferenceMetalMaterial, conferenceRoom);
-    createBox(2.5, 0.08, 0.12, 3.05, 2.08, -1.2, conferenceMetalMaterial, conferenceRoom);
-    createBox(2.5, 0.08, 0.12, 3.05, 0.28, -1.2, conferenceMetalMaterial, conferenceRoom);
-
-    const roomFrames = [
-      { id: "about", title: "About Pavan", category: "Profile", detail: "AI engineer building useful systems with data and care.", accent: "#ff5c35" },
-      { id: "certifications", title: "Certifications", category: "Recognition", detail: `${CERTIFICATIONS.length}+ verified AI and data credentials.`, accent: "#38bdf8" },
-      { id: "achievements", title: "Achievements", category: "Impact", detail: `${METRICS.length} measurable signals from projects and practice.`, accent: "#10b981" },
-      { id: "education", title: "Education", category: "Foundation", detail: PERSONAL_INFO.education[0].degree, accent: "#f59e0b" },
-      { id: "skills", title: "Capabilities", category: "Toolkit", detail: `${TECH_SKILLS.length} technical disciplines across AI and product work.`, accent: "#a855f7" },
-      { id: "experience", title: "Experience", category: "Practice", detail: `${INTERNSHIPS.length} internships across data, AI, and software engineering.`, accent: "#06b6d4" },
-    ];
-
-    roomFrames.forEach((frame, index) => {
-      const column = index % 3;
-      const row = Math.floor(index / 3);
-      const x = (column - 1) * 1.52;
-      const y = 1.45 - row * 1.48;
-      const texture = create3DCardTexture({
-        category: frame.category,
-        title: frame.title,
-        tagline: frame.detail,
-        chips: [frame.id.toUpperCase(), "OPEN"],
-        accentColor: frame.accent,
-        metric: `0${index + 1}`,
-        type: "information",
-      });
-      const cardGeometry = new THREE.PlaneGeometry(1.28, 0.92);
-      const cardMaterial = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.38,
-        metalness: 0.18,
-        side: THREE.DoubleSide,
-      });
-      const cardMesh = new THREE.Mesh(cardGeometry, cardMaterial);
-      cardMesh.position.set(x, y, -1.25);
-      cardMesh.userData = {
-        type: "information",
-        data: frame,
-        defaultPos: cardMesh.position.clone(),
-        defaultRot: cardMesh.rotation.clone(),
-      };
-      conferenceRoom.add(cardMesh);
-      interactiveCards.push(cardMesh);
-      trackResource(cardMesh, cardMaterial, cardGeometry, texture);
-
-      const frameMaterial = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(frame.accent),
-        emissive: new THREE.Color(frame.accent),
-        emissiveIntensity: 0.15,
-        roughness: 0.38,
-        metalness: 0.72,
-      });
-      createBox(1.4, 0.06, 0.1, x, y + 0.51, -1.18, frameMaterial, conferenceRoom);
-      createBox(1.4, 0.06, 0.1, x, y - 0.51, -1.18, frameMaterial, conferenceRoom);
-      createBox(0.06, 0.96, 0.1, x - 0.67, y, -1.18, frameMaterial, conferenceRoom);
-      createBox(0.06, 0.96, 0.1, x + 0.67, y, -1.18, frameMaterial, conferenceRoom);
-    });
-
-    // D. 3D Interactive Skills Constellation Nodes (Floating Polyhedra)
-    const skillsGroup = new THREE.Group();
-    skillsGroup.position.set(2.8, -0.6, 1.2);
-    masterStudio.add(skillsGroup);
-
-    const contactExit = new THREE.Group();
-    contactExit.position.set(0, -0.65, -1.45);
-    masterStudio.add(contactExit);
-    const exitFrameMaterial = new THREE.MeshStandardMaterial({
-      color: 0x2b201b,
-      roughness: 0.5,
-      metalness: 0.35,
-    });
-    const exitGlowMaterial = new THREE.MeshBasicMaterial({
-      color: 0xff5c35,
-      transparent: true,
-      opacity: 0.28,
-    });
-    createBox(2.6, 4.2, 0.18, 0, 1.0, 0, exitFrameMaterial, contactExit);
-    createBox(0.16, 4.6, 0.22, -1.42, 1.0, 0, exitFrameMaterial, contactExit);
-    createBox(0.16, 4.6, 0.22, 1.42, 1.0, 0, exitFrameMaterial, contactExit);
-    createBox(2.9, 0.16, 0.22, 0, 3.28, 0, exitFrameMaterial, contactExit);
-    const exitPanelGeometry = new THREE.PlaneGeometry(1.85, 2.85);
-    const exitPanel = new THREE.Mesh(exitPanelGeometry, exitGlowMaterial);
-    exitPanel.position.set(0, 1.15, -0.12);
-    contactExit.add(exitPanel);
-    exitPanel.userData = {
-      type: "information",
-      data: { id: "contact", title: "Get in touch" },
-      defaultPos: exitPanel.position.clone(),
-      defaultRot: exitPanel.rotation.clone(),
+    const contactTablet = new THREE.Mesh(contactTabletGeo, contactTabletMat);
+    contactTablet.position.set(0, -0.78, -0.55);
+    contactTablet.rotation.x = -Math.PI / 2 + 0.25;
+    contactTablet.userData = {
+      type: "contact",
+      data: {
+        id: "contact",
+        title: "Contact Pavan Kumar Verma",
+        category: "Direct Inquiries",
+        email: PERSONAL_INFO.email,
+        github: PERSONAL_INFO.github,
+        linkedin: PERSONAL_INFO.linkedin,
+      },
+      defaultPos: contactTablet.position.clone(),
+      defaultRot: contactTablet.rotation.clone(),
     };
-    interactiveCards.push(exitPanel);
-    trackResource(exitPanel, exitGlowMaterial, exitPanelGeometry);
+    contactGroup.add(contactTablet);
+    interactiveObjects.push(contactTablet);
+    trackResource(contactTablet, contactTabletMat, contactTabletGeo, contactConsoleTex);
 
-    const contactSignalGeometry = new THREE.PlaneGeometry(1.35, 0.72);
-    const contactSignalCanvas = document.createElement("canvas");
-    contactSignalCanvas.width = 640;
-    contactSignalCanvas.height = 320;
-    const contactSignalContext = contactSignalCanvas.getContext("2d");
-    contactSignalContext.fillStyle = "#0b0b0b";
-    contactSignalContext.fillRect(0, 0, 640, 320);
-    contactSignalContext.fillStyle = "#ff5c35";
-    contactSignalContext.font = '700 34px "JetBrains Mono", monospace';
-    contactSignalContext.fillText("OPEN CHANNEL", 54, 116);
-    contactSignalContext.fillStyle = "rgba(255,255,255,0.62)";
-    contactSignalContext.font = '400 20px "JetBrains Mono", monospace';
-    contactSignalContext.fillText("EMAIL / SOCIAL / RESUME", 54, 168);
-    const contactSignalTexture = new THREE.CanvasTexture(contactSignalCanvas);
-    contactSignalTexture.colorSpace = THREE.SRGBColorSpace;
-    const contactSignalMaterial = new THREE.MeshBasicMaterial({ map: contactSignalTexture });
-    const contactSignal = new THREE.Mesh(contactSignalGeometry, contactSignalMaterial);
-    contactSignal.position.set(0, -0.55, -0.15);
-    contactExit.add(contactSignal);
-    trackResource(contactSignal, contactSignalMaterial, contactSignalGeometry, contactSignalTexture);
-
-    const polyGeos = [
-      new THREE.IcosahedronGeometry(0.4, 0),
-      new THREE.OctahedronGeometry(0.45, 0),
-      new THREE.DodecahedronGeometry(0.38, 0),
-      new THREE.TetrahedronGeometry(0.5, 0),
-    ];
-
-    const skillNames = ["PyTorch", "YOLOv8", "OpenCV", "React.js", "FastAPI", "Pandas", "Scikit-Learn", "Power BI"];
-    const skillNodes = [];
-
-    skillNames.forEach((name, idx) => {
-      const angle = (idx / skillNames.length) * Math.PI * 2;
-      const r = 1.6 + (idx % 2) * 0.4;
-      const x = Math.cos(angle) * r;
-      const y = Math.sin(angle) * 0.8 + (idx % 2 ? 0.3 : -0.3);
-      const z = Math.sin(angle) * 0.9;
-
-      const geo = polyGeos[idx % polyGeos.length];
-      const mat = new THREE.MeshPhysicalMaterial({
-        color: 0x111111,
-        emissive: idx % 2 === 0 ? 0xe11d48 : 0x00f0ff,
-        emissiveIntensity: 0.55,
-        wireframe: true,
-        roughness: 0.2,
-      });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(x, y, z);
-      mesh.userData = {
-        type: "skill",
-        data: { name },
-        rotSpeed: 0.015 + (idx % 3) * 0.008,
-      };
-
-      skillsGroup.add(mesh);
-      skillNodes.push(mesh);
-      interactiveCards.push(mesh);
-      trackResource(mesh, mat, geo);
-    });
-
-    // --- 9. Atmospheric Floating Star/Dust Particles ---
-    const particleCount = width < 600 ? 72 : width < 900 ? 130 : 220;
+    // --- 13. Atmospheric Floating Dust & Star Particles ---
+    const particleCount = width < 600 ? 90 : 240;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particlePositions.length; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 22;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 14;
-      particlePositions[i + 2] = -3 - Math.random() * 9;
+      particlePositions[i] = (Math.random() - 0.5) * 28;
+      particlePositions[i + 1] = (Math.random() - 0.5) * 12 + 1;
+      particlePositions[i + 2] = (Math.random() - 0.5) * 22;
     }
     particleGeo.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
     const particleMat = new THREE.PointsMaterial({
       color: 0xffffff,
-      size: 0.024,
+      size: 0.026,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.45,
     });
     const dustParticles = new THREE.Points(particleGeo, particleMat);
-    scene.add(dustParticles);
+    digitalStudio.add(dustParticles);
     trackResource(dustParticles, particleMat, particleGeo);
 
-    // --- 10. Raycasting & Mouse Interaction ---
+    // --- 14. Raycasting & Mouse Tracking ---
     const raycaster = new THREE.Raycaster();
     const mouseNorm = new THREE.Vector2(-100, -100);
     let hoveredMesh = null;
+
     const publishCursor = (mode, text) => {
       window.dispatchEvent(new CustomEvent("bq:scene-cursor", { detail: { mode, text } }));
     };
@@ -911,25 +1170,25 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       sceneState.current.mouse.tx = e.clientX / width - 0.5;
       sceneState.current.mouse.ty = e.clientY / height - 0.5;
 
-      // Handle Orbit Dragging
       if (sceneState.current.isDragging) {
         publishCursor("open", "DRAG");
         const deltaX = e.clientX - sceneState.current.dragStart.x;
         const deltaY = e.clientY - sceneState.current.dragStart.y;
-        sceneState.current.orbitOffset.theta += deltaX * 0.003;
-        sceneState.current.orbitOffset.phi += deltaY * 0.002;
-        sceneState.current.orbitOffset.phi = Math.max(-0.4, Math.min(0.5, sceneState.current.orbitOffset.phi));
+        sceneState.current.orbitOffset.theta += deltaX * 0.0025;
+        sceneState.current.orbitOffset.phi += deltaY * 0.0018;
+        sceneState.current.orbitOffset.phi = Math.max(
+          -0.35,
+          Math.min(0.45, sceneState.current.orbitOffset.phi)
+        );
         sceneState.current.dragStart.x = e.clientX;
         sceneState.current.dragStart.y = e.clientY;
       }
     };
 
     const onPointerDown = (e) => {
-      // If clicking interactive HUD, ignore
-      if (e.target.closest("button, a, input, textarea, .bq-hud-control")) return;
+      if (e.target.closest("button, a, input, textarea, .bq-3d-hud-bar, .bq-modal")) return;
       sceneState.current.isDragging = true;
       setIsOrbiting(true);
-      publishCursor("open", "DRAG");
       sceneState.current.dragStart.x = e.clientX;
       sceneState.current.dragStart.y = e.clientY;
     };
@@ -939,9 +1198,9 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       setIsOrbiting(false);
       publishCursor("default", "");
 
-      // Raycast click trigger
+      // Raycast click
       raycaster.setFromCamera(mouseNorm, camera);
-      const intersects = raycaster.intersectObjects(interactiveCards, false);
+      const intersects = raycaster.intersectObjects(interactiveObjects, false);
       if (intersects.length > 0) {
         const hit = intersects[0].object;
         if (hit.userData && hit.userData.type === "project" && onSelectProject) {
@@ -960,15 +1219,20 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       }
     };
 
-    const onTouchStart = (event) => onPointerDown(event.touches[0]);
-    const onTouchMove = (event) => onPointerMove(event.touches[0]);
+    const onTouchStart = (e) => onPointerDown(e.touches[0]);
+    const onTouchMove = (e) => onPointerMove(e.touches[0]);
     const onTouchEnd = () => onPointerUp({ target: renderer.domElement });
 
     const onScroll = () => {
-      const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      const maxScroll = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        1
+      );
       const progress = window.scrollY / maxScroll;
       sceneState.current.scrollProgress = progress;
-      setActiveZone(getActiveChapter(progress).id);
+      const activeCh = getActiveChapter(progress);
+      setActiveZone(activeCh.id);
+      sceneState.current.isAutonomousFlight = false;
     };
 
     const onResize = () => {
@@ -989,149 +1253,115 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
 
-    // --- 11. Main 3D Animation & Physics Loop ---
+    // --- 15. Main Animation & Physics Loop ---
     let frameId;
     const startedAt = performance.now();
 
     const animate = () => {
       frameId = requestAnimationFrame(animate);
       if (document.hidden) return;
+
       const elapsedTime = reducedMotion ? 0 : (performance.now() - startedAt) / 1000;
       const st = sceneState.current;
 
-      // Lerp mouse
-      st.mouse.x += (st.mouse.tx - st.mouse.x) * 0.05;
-      st.mouse.y += (st.mouse.ty - st.mouse.y) * 0.05;
+      // Smooth mouse spring
+      st.mouse.x += (st.mouse.tx - st.mouse.x) * 0.055;
+      st.mouse.y += (st.mouse.ty - st.mouse.y) * 0.055;
 
       const progress = st.scrollProgress;
       const isMobile = width < 850;
-      const smoothReveal = (start, end) => {
-        const amount = THREE.MathUtils.clamp((progress - start) / (end - start), 0, 1);
-        return amount * amount * (3 - 2 * amount);
-      };
-      const projectReveal = smoothReveal(0.16, 0.28);
-      const roomReveal = smoothReveal(0.34, 0.5);
-      const heroReveal = 1 - smoothReveal(0.18, 0.34);
-      const metricsReveal = smoothReveal(0.48, 0.66);
-      const skillsReveal = smoothReveal(0.62, 0.82);
-      const contactReveal = smoothReveal(0.82, 0.98);
-      const selectedProjectId = selectedProjectRef.current?.id;
-      projectDisplayRecords.forEach(({ id, cardMesh, backlightMaterial }) => {
-        const isSelected = selectedProjectId === id;
-        const record = projectDisplayRecords.find((project) => project.id === id);
-        if (isMobile && record) {
-          const projectProgress = THREE.MathUtils.clamp((progress - 0.18) / 0.24, 0, 1);
-          const activeIndex = Math.min(PROJECTS.length - 1, Math.round(projectProgress * (PROJECTS.length - 1)));
-          const isActiveMobileProject = record.index === activeIndex;
-          record.members.forEach(({ mesh, mobilePosition }) => {
-            mesh.position.copy(mobilePosition);
-            mesh.scale.setScalar(isActiveMobileProject ? 1.12 : 0.01);
-            if (mesh.material) {
-              mesh.material.opacity = isActiveMobileProject ? 1 : 0.04;
-            }
-          });
-          backlightMaterial.opacity = isActiveMobileProject ? 0.28 : 0.01;
-        } else if (record) {
-          record.members.forEach(({ mesh, desktopPosition }) => {
-            mesh.position.copy(desktopPosition);
-            mesh.scale.setScalar(1);
-          });
-          cardMesh.material.opacity = selectedProjectId && !isSelected ? 0.22 : 1;
-          backlightMaterial.opacity = selectedProjectId ? (isSelected ? 0.32 : 0.025) : 0.08;
-        }
-      });
+
       if (experienceActiveRef.current) {
         st.entranceProgress += (1 - st.entranceProgress) * 0.045;
       } else {
         st.entranceProgress = 0;
       }
 
-      const cameraState = getCameraState(progress, isMobile);
-      const [sceneCamX, sceneCamY, sceneCamZ] = cameraState.position;
-      const [sceneLookX, sceneLookY, sceneLookZ] = cameraState.target;
+      // Determine Camera Waypoint
+      let sceneCamX, sceneCamY, sceneCamZ;
+      let sceneLookX, sceneLookY, sceneLookZ;
+
+      if (st.isAutonomousFlight && st.flightTargetPos && st.flightTargetLook) {
+        sceneCamX = st.flightTargetPos.x;
+        sceneCamY = st.flightTargetPos.y;
+        sceneCamZ = st.flightTargetPos.z;
+        sceneLookX = st.flightTargetLook.x;
+        sceneLookY = st.flightTargetLook.y;
+        sceneLookZ = st.flightTargetLook.z;
+      } else {
+        const cameraState = getCameraState(progress, isMobile);
+        [sceneCamX, sceneCamY, sceneCamZ] = cameraState.position;
+        [sceneLookX, sceneLookY, sceneLookZ] = cameraState.target;
+      }
+
       const baseCamX = THREE.MathUtils.lerp(0, sceneCamX, st.entranceProgress);
       const baseCamY = THREE.MathUtils.lerp(1.8, sceneCamY, st.entranceProgress);
-      const baseCamZ = THREE.MathUtils.lerp(18, sceneCamZ, st.entranceProgress);
+      const baseCamZ = THREE.MathUtils.lerp(16, sceneCamZ, st.entranceProgress);
       const lookX = THREE.MathUtils.lerp(0, sceneLookX, st.entranceProgress);
-      const lookY = THREE.MathUtils.lerp(1.2, sceneLookY, st.entranceProgress);
+      const lookY = THREE.MathUtils.lerp(0.8, sceneLookY, st.entranceProgress);
       const lookZ = THREE.MathUtils.lerp(0, sceneLookZ, st.entranceProgress);
 
-      // Add mouse parallax + user orbit offset
+      // Mouse Parallax & Drag Orbit Offset
       const parallax = reducedMotion ? 0 : 1;
-      const finalCamX = baseCamX + st.mouse.x * 0.8 * parallax + st.orbitOffset.theta * 3.5 * parallax;
-      const finalCamY = baseCamY - st.mouse.y * 0.5 * parallax + st.orbitOffset.phi * 2.5 * parallax;
+      const finalCamX = baseCamX + st.mouse.x * 0.75 * parallax + st.orbitOffset.theta * 3.2 * parallax;
+      const finalCamY = baseCamY - st.mouse.y * 0.45 * parallax + st.orbitOffset.phi * 2.2 * parallax;
       const finalCamZ = baseCamZ;
 
+      // Project Focus Fly-to Zoom
       let focusStrength = 0;
       if (st.projectFocus.point) {
         const focusElapsed = (performance.now() - st.projectFocus.startedAt) / 1000;
-        if (focusElapsed < 1.8) {
-          focusStrength = Math.min(focusElapsed / 0.35, 1) * Math.min((1.8 - focusElapsed) / 0.45, 1);
+        if (focusElapsed < 2.0) {
+          focusStrength = Math.min(focusElapsed / 0.4, 1) * Math.min((2.0 - focusElapsed) / 0.5, 1);
         } else {
           st.projectFocus.point = null;
         }
       }
 
       const focusPoint = st.projectFocus.point;
-      const desiredCamX = focusPoint ? THREE.MathUtils.lerp(finalCamX, focusPoint.x, focusStrength * 0.42) : finalCamX;
-      const desiredCamY = focusPoint ? THREE.MathUtils.lerp(finalCamY, focusPoint.y + 0.45, focusStrength * 0.42) : finalCamY;
-      const desiredCamZ = focusPoint ? THREE.MathUtils.lerp(finalCamZ, focusPoint.z + 4.6, focusStrength * 0.42) : finalCamZ;
+      const desiredCamX = focusPoint
+        ? THREE.MathUtils.lerp(finalCamX, focusPoint.x, focusStrength * 0.45)
+        : finalCamX;
+      const desiredCamY = focusPoint
+        ? THREE.MathUtils.lerp(finalCamY, focusPoint.y + 0.35, focusStrength * 0.45)
+        : finalCamY;
+      const desiredCamZ = focusPoint
+        ? THREE.MathUtils.lerp(finalCamZ, focusPoint.z + 4.2, focusStrength * 0.45)
+        : finalCamZ;
 
-      camera.position.x += (desiredCamX - camera.position.x) * 0.05;
-      camera.position.y += (desiredCamY - camera.position.y) * 0.05;
-      camera.position.z += (desiredCamZ - camera.position.z) * 0.05;
+      camera.position.x += (desiredCamX - camera.position.x) * 0.055;
+      camera.position.y += (desiredCamY - camera.position.y) * 0.055;
+      camera.position.z += (desiredCamZ - camera.position.z) * 0.055;
 
-      const desiredLookX = focusPoint ? THREE.MathUtils.lerp(lookX, focusPoint.x, focusStrength * 0.52) : lookX;
-      const desiredLookY = focusPoint ? THREE.MathUtils.lerp(lookY, focusPoint.y, focusStrength * 0.52) : lookY;
-      const desiredLookZ = focusPoint ? THREE.MathUtils.lerp(lookZ, focusPoint.z, focusStrength * 0.52) : lookZ;
+      const desiredLookX = focusPoint
+        ? THREE.MathUtils.lerp(lookX, focusPoint.x, focusStrength * 0.55)
+        : lookX;
+      const desiredLookY = focusPoint
+        ? THREE.MathUtils.lerp(lookY, focusPoint.y, focusStrength * 0.55)
+        : lookY;
+      const desiredLookZ = focusPoint
+        ? THREE.MathUtils.lerp(lookZ, focusPoint.z, focusStrength * 0.55)
+        : lookZ;
 
-      currentLookAt.current.x += (desiredLookX - currentLookAt.current.x) * 0.05;
-      currentLookAt.current.y += (desiredLookY - currentLookAt.current.y) * 0.05;
-      currentLookAt.current.z += (desiredLookZ - currentLookAt.current.z) * 0.05;
+      currentLookAt.current.x += (desiredLookX - currentLookAt.current.x) * 0.055;
+      currentLookAt.current.y += (desiredLookY - currentLookAt.current.y) * 0.055;
+      currentLookAt.current.z += (desiredLookZ - currentLookAt.current.z) * 0.055;
       camera.lookAt(currentLookAt.current);
 
-      // Sofa continuous 3D rotation & scale
-      sofaGroup.rotation.y = reducedMotion ? progress * 0.35 : Math.sin(elapsedTime * 0.4) * 0.04 + progress * 0.35 + st.mouse.x * 0.1;
-      sofaGroup.position.x = isMobile ? 0 : 0.8 - progress * 1.6;
+      // Execute dynamic animators
+      dynamicAnimators.forEach((anim) => anim(elapsedTime));
 
-      profileWorkspace.position.y = reducedMotion ? 0.15 : 0.15 + Math.sin(elapsedTime * 0.65) * 0.018;
-      profileWorkspace.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.78 : 1, heroReveal));
-      heroWallElements.forEach((element) => element.scale.setScalar(0.015));
-      project3DGroup.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.72 : 1, projectReveal));
-      project3DGroup.position.z = THREE.MathUtils.lerp(1.4, -1.45, projectReveal);
-      conferenceRoom.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.76 : 1, roomReveal));
-      conferenceRoom.position.z = THREE.MathUtils.lerp(1.8, -1.1, roomReveal);
-      certs3DGroup.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.72 : 1, roomReveal));
-      certs3DGroup.position.z = THREE.MathUtils.lerp(1.6, 0.2, roomReveal);
-      metrics3DGroup.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.72 : 1, metricsReveal));
-      metrics3DGroup.position.z = THREE.MathUtils.lerp(1.6, 0.2, metricsReveal);
-      skillsGroup.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.78 : 1, skillsReveal));
-      contactExit.scale.setScalar(THREE.MathUtils.lerp(0.015, isMobile ? 0.78 : 1, contactReveal));
-      contactExit.position.z = THREE.MathUtils.lerp(1.8, -1.45, contactReveal);
-      profileSignalMeshes.forEach(({ mesh, baseHeight, phase }) => {
-        const height = reducedMotion ? baseHeight : baseHeight * (0.82 + Math.sin(elapsedTime * 1.8 + phase) * 0.18);
-        mesh.scale.y = height / baseHeight;
-        mesh.position.y = -0.72 + height / 2;
-      });
-      contactTablet.position.y = -1.08 + (reducedMotion ? 0 : Math.sin(elapsedTime * 1.2) * 0.025);
-      contactTablet.material.emissiveIntensity = reducedMotion ? 0.45 : 0.45 + Math.sin(elapsedTime * 1.6) * 0.12;
+      // Light pulses
+      cyanRimLight.intensity = 4.0 + Math.sin(elapsedTime * 1.8) * 0.8;
+      amberRimLight.intensity = 4.5 + Math.cos(elapsedTime * 1.6) * 0.7;
+      // Portal entrance glow breathing
+      portalGlow.intensity = 3.0 + Math.sin(elapsedTime * 2.2) * 1.2;
+      portalFloorGlow.intensity = 1.8 + Math.cos(elapsedTime * 1.4 + 0.5) * 0.6;
+      if (!reducedMotion) dustParticles.rotation.y = elapsedTime * 0.012;
 
-      // Rotate Skills Polyhedra
-      skillNodes.forEach((node) => {
-        if (!reducedMotion) {
-          node.rotation.x += node.userData.rotSpeed || 0.01;
-          node.rotation.y += node.userData.rotSpeed * 1.2 || 0.015;
-        }
-      });
-
-      // Pulse Dynamic Studio Lights
-      crimsonRimLight.intensity = reducedMotion ? 7.5 : 7.5 + Math.sin(elapsedTime * 2.0) * 1.8;
-      cyanRimLight.intensity = reducedMotion ? 4 : 4.0 + Math.cos(elapsedTime * 1.8) * 1.2;
-      if (!reducedMotion) dustParticles.rotation.y = elapsedTime * 0.018;
-
-      // 3D Raycaster detection & mesh lift physics
+      // Raycaster inspection
       raycaster.setFromCamera(mouseNorm, camera);
-      const intersects = raycaster.intersectObjects(interactiveCards, false);
+      const intersects = raycaster.intersectObjects(interactiveObjects, false);
 
       if (intersects.length > 0) {
         const hit = intersects[0].object;
@@ -1142,15 +1372,19 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
           }
           hoveredMesh = hit;
           setHoveredObjectInfo(hit.userData);
-          publishCursor(hit.userData.type === "project" ? "view" : "open", hit.userData.type === "project" ? "VIEW" : "OPEN");
+
+          const isProj = hit.userData.type === "project";
+          const isSkill = hit.userData.type === "skill";
+          const label = isProj ? "VIEW PROJECT" : isSkill ? "INSPECT" : "OPEN";
+          publishCursor(isProj ? "view" : "open", label);
           soundFX.playHover();
         }
 
-        // Lift & Tilt Hovered Mesh towards camera
+        // Lift & Tilt Hovered Mesh toward camera
         if (hit.userData.defaultPos) {
-          hit.position.z = hit.userData.defaultPos.z + 0.35;
-          hit.rotation.x = (st.mouse.y - 0.5) * 0.15;
-          hit.rotation.y = hit.userData.defaultRot.y + (st.mouse.x - 0.5) * 0.15;
+          hit.position.z = hit.userData.defaultPos.z + 0.28;
+          hit.rotation.x = hit.userData.defaultRot.x + (st.mouse.y - 0.5) * 0.08;
+          hit.rotation.y = hit.userData.defaultRot.y + (st.mouse.x - 0.5) * 0.08;
         }
       } else {
         if (hoveredMesh && hoveredMesh.userData.defaultPos) {
@@ -1192,7 +1426,11 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
   }, [onSelectProject, onSelectDetail]);
 
   return (
-    <div className={`bq-3d-master-container ${webglUnavailable ? "is-webgl-unavailable" : ""}`}>
+    <div
+      className={`bq-3d-master-container ${
+        webglUnavailable ? "is-webgl-unavailable" : ""
+      }`}
+    >
       {/* Three.js Canvas Container */}
       <div className="scroll-3d-canvas-container" ref={mountRef} />
 
@@ -1204,65 +1442,81 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
       )}
 
       {/* Floating 3D Navigation HUD / Spatial Waypoints */}
-      <div className="bq-3d-hud-bar" role="navigation" aria-label="3D Spatial Navigator">
+      <div
+        className="bq-3d-hud-bar"
+        role="navigation"
+        aria-label="3D Spatial Studio Navigator"
+      >
         <div className="bq-3d-hud-title">
           <Compass size={14} className="text-rose-500" />
-          <span>Navigate</span>
+          <span>STUDIO</span>
         </div>
 
         <div className="bq-3d-hud-actions">
           <button
-            className={`bq-3d-hud-btn ${activeZone === "lounge" ? "is-active" : ""}`}
-            onClick={() => flyToZone("lounge")}
+            className={`bq-3d-hud-btn ${activeZone === "entrance" ? "is-active" : ""}`}
+            onClick={() => flyToZone("entrance")}
             data-cursor="open"
-            data-cursor-text="LOUNGE"
-            title="3D Sofa Lounge"
+            data-cursor-text="FOYER"
+            title="Entrance Foyer"
           >
-            <span>Home</span>
+            <Home size={13} />
+            <span>Foyer</span>
           </button>
 
           <button
-            className={`bq-3d-hud-btn ${activeZone === "projects" ? "is-active" : ""}`}
-            onClick={() => flyToZone("projects")}
+            className={`bq-3d-hud-btn ${activeZone === "living" ? "is-active" : ""}`}
+            onClick={() => flyToZone("living")}
             data-cursor="open"
-            data-cursor-text="PROJECTS"
-            title="3D Behind-Sofa Projects Arc"
+            data-cursor-text="ABOUT"
+            title="Living Lounge / Identity"
           >
-            <Layers size={13} />
-            <span>Work</span>
+            <User size={13} />
+            <span>About</span>
           </button>
 
           <button
-            className={`bq-3d-hud-btn ${activeZone === "certs" ? "is-active" : ""}`}
-            onClick={() => flyToZone("certs")}
+            className={`bq-3d-hud-btn ${activeZone === "devroom" ? "is-active" : ""}`}
+            onClick={() => flyToZone("devroom")}
             data-cursor="open"
-            data-cursor-text="CERTS"
-            title="3D Certifications Wing"
-          >
-            <Award size={13} />
-            <span>Recognition</span>
-          </button>
-
-          <button
-            className={`bq-3d-hud-btn ${activeZone === "achievements" ? "is-active" : ""}`}
-            onClick={() => flyToZone("achievements")}
-            data-cursor="open"
-            data-cursor-text="METRICS"
-            title="3D Achievements Pods"
-          >
-            <Sparkles size={13} />
-            <span>Impact</span>
-          </button>
-
-          <button
-            className={`bq-3d-hud-btn ${activeZone === "skills" ? "is-active" : ""}`}
-            onClick={() => flyToZone("skills")}
-            data-cursor="open"
-            data-cursor-text="SKILLS"
-            title="3D Skills Constellation"
+            data-cursor-text="WORKBENCH"
+            title="Developer Studio Desk"
           >
             <Cpu size={13} />
-            <span>Capabilities</span>
+            <span>Workbench</span>
+          </button>
+
+          <button
+            className={`bq-3d-hud-btn ${activeZone === "ailab" ? "is-active" : ""}`}
+            onClick={() => flyToZone("ailab")}
+            data-cursor="open"
+            data-cursor-text="AI LAB"
+            title="AI & Vision Lab (YOLOv8)"
+          >
+            <Sparkles size={13} />
+            <span>AI Lab</span>
+          </button>
+
+          <button
+            className={`bq-3d-hud-btn ${activeZone === "gallery" ? "is-active" : ""}`}
+            onClick={() => flyToZone("gallery")}
+            data-cursor="open"
+            data-cursor-text="PROJECTS"
+            title="Project Exhibition Gallery"
+          >
+            <Layers size={13} />
+            <span>Projects</span>
+          </button>
+
+          <button
+            className={`bq-3d-hud-btn ${activeZone === "library" ? "is-active" : ""}`}
+            onClick={() => flyToZone("library")}
+            data-cursor="open"
+            data-cursor-text="JOURNEY"
+            title="Library & Certifications"
+          >
+            <Award size={13} />
+            <span>Journey</span>
           </button>
 
           <button
@@ -1270,7 +1524,7 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
             onClick={() => flyToZone("contact")}
             data-cursor="open"
             data-cursor-text="CONTACT"
-            title="3D Contact Terminal"
+            title="Horizon Contact Studio"
           >
             <Mail size={13} />
             <span>Contact</span>
@@ -1288,9 +1542,13 @@ export default function Scroll3DScene({ onSelectProject, onSelectDetail, isExper
         <div className="bq-3d-raycast-banner">
           <span className="bq-raycast-tag">{hoveredObjectInfo.type?.toUpperCase()}</span>
           <span className="bq-raycast-title">
-            {hoveredObjectInfo.data?.title || hoveredObjectInfo.data?.name || "Interactive 3D Element"}
+            {hoveredObjectInfo.data?.title ||
+              hoveredObjectInfo.data?.name ||
+              "Interactive 3D Element"}
           </span>
-          <span className="bq-raycast-cta">Click to inspect</span>
+          <span className="bq-raycast-cta">
+            {hoveredObjectInfo.type === "project" ? "Click to view project ↗" : "Click to inspect ↗"}
+          </span>
         </div>
       )}
     </div>

@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-const chapters = [
-  { range: [0, 0.18], index: "00", label: "Main room", title: "Pavan's digital workspace" },
-  { range: [0.18, 0.42], index: "01", label: "Project room", title: "Selected systems and experiments" },
-  { range: [0.42, 0.65], index: "02", label: "Gallery wall", title: "Recognition and milestones" },
-  { range: [0.65, 0.85], index: "03", label: "Capability room", title: "Tools for turning signals into products" },
-  { range: [0.85, 1.01], index: "04", label: "Exit terminal", title: "Open a channel with Pavan" },
+const SPATIAL_CHAPTERS = [
+  { range: [0, 0.14], index: "01", label: "Grand Entrance Foyer", title: "Pavan Kumar Verma — AI Engineer" },
+  { range: [0.14, 0.28], index: "02", label: "Living Lounge", title: "About Me — Identity & Story" },
+  { range: [0.28, 0.44], index: "03", label: "Dev Workbench", title: "Python, FastAPI & Full-Stack" },
+  { range: [0.44, 0.60], index: "04", label: "AI & Vision Lab", title: "YOLO, ML Models & Intelligence" },
+  { range: [0.60, 0.78], index: "05", label: "Project Gallery", title: "6 Featured AI & Web Systems" },
+  { range: [0.78, 0.90], index: "06", label: "Library & Journey", title: "Certifications & Career Timeline" },
+  { range: [0.90, 1.01], index: "07", label: "Contact Studio", title: "Let's Build Something Intelligent" },
 ];
 
-const getChapter = (progress) => chapters.find(({ range }) => progress >= range[0] && progress < range[1]) || chapters[0];
+const getChapter = (progress) =>
+  SPATIAL_CHAPTERS.find(({ range }) => progress >= range[0] && progress < range[1]) ||
+  SPATIAL_CHAPTERS[SPATIAL_CHAPTERS.length - 1];
 
 export default function WorldStatus() {
   const [progress, setProgress] = useState(0);
@@ -26,8 +30,8 @@ export default function WorldStatus() {
   const chapter = getChapter(progress);
 
   return (
-    <div className="world-status" aria-live="polite">
-      <div className="world-status__index">{chapter.index} / 04</div>
+    <div className="world-status" aria-live="polite" aria-label="Current spatial zone">
+      <div className="world-status__index">{chapter.index} / 07</div>
       <div>
         <span className="world-status__label">{chapter.label}</span>
         <strong>{chapter.title}</strong>

@@ -32,3 +32,9 @@ test("renders portfolio with authentic resume information and navigation", () =>
   const projNav = screen.getAllByText(/Projects/i);
   expect(projNav.length).toBeGreaterThan(0);
 });
+
+test("mounts the intro experience without crashing in headless canvas environments", () => {
+  const { container } = render(<App />);
+  expect(container).toBeTruthy();
+  expect(screen.getByText(/AI ENGINEER IN THE MAKING/i)).toBeInTheDocument();
+});

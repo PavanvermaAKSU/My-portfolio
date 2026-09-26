@@ -8,15 +8,19 @@ export default function CustomCursor() {
   const [cursorMode, setCursorMode] = useState("default"); // default, hover, view, open, sound
   const [isClicking, setIsClicking] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const mousePos = useRef({ x: -100, y: -100 });
   const ringPos = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
     let animFrame;
-    setIsTouch(window.matchMedia("(pointer: coarse)").matches);
+    const touchDevice = window.matchMedia("(pointer: coarse)").matches;
+    setIsTouch(touchDevice);
+    if (touchDevice) return undefined;
 
     const onMouseMove = (e) => {
+      if (!isVisible) setIsVisible(true);
       mousePos.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
@@ -32,9 +36,9 @@ export default function CustomCursor() {
       setIsClicking(false);
     };
 
-    // Smooth Spring/Lerp Loop for outer ring
+    // Smooth Spring/Lerp Loop for outer fluid trailing ring
     const render = () => {
-      const lerp = 0.18;
+      const lerp = 0.2;
       ringPos.current.x += (mousePos.current.x - ringPos.current.x) * lerp;
       ringPos.current.y += (mousePos.current.y - ringPos.current.y) * lerp;
 
@@ -48,12 +52,14 @@ export default function CustomCursor() {
     // Contextual Hover Detection
     const handleMouseOver = (e) => {
       const target = e.target;
-      
+
       const customCursorEl = target.closest("[data-cursor]");
       if (customCursorEl) {
         const mode = customCursorEl.getAttribute("data-cursor");
         setCursorMode(mode);
-        const text = customCursorEl.getAttribute("data-cursor-text") || (mode === "view" ? "VIEW" : mode === "open" ? "OPEN" : "");
+        const text =
+          customCursorEl.getAttribute("data-cursor-text") ||
+          (mode === "view" ? "VIEW PROJECT" : mode === "open" ? "OPEN" : "");
         setCursorText(text);
         soundFX.playHover();
         return;
@@ -66,7 +72,9 @@ export default function CustomCursor() {
         return;
       }
 
-      const interactive = target.closest("a, button, [role=button], input, textarea, select, label, .bq-clickable");
+      const interactive = target.closest(
+        "a, button, [role=button], input, textarea, select, label, .bq-clickable"
+      );
       if (interactive) {
         setCursorMode("hover");
         setCursorText("");
@@ -86,6 +94,7 @@ export default function CustomCursor() {
       }
     };
 
+    // Event emitted by 3D Raycaster
     const handleSceneCursor = (event) => {
       const { mode = "default", text = "" } = event.detail || {};
       setCursorMode(mode);
@@ -108,22 +117,30 @@ export default function CustomCursor() {
       document.removeEventListener("mouseout", handleMouseOut);
       window.removeEventListener("bq:scene-cursor", handleSceneCursor);
     };
-  }, []);
+  }, [isVisible]);
+
+  if (isTouch) return null;
 
   return (
     <>
       {/* Center sharp dot */}
-      {!isTouch && <div
+      <div
         ref={dotRef}
-        className={`bq-cursor-dot ${cursorMode !== "default" ? "is-active" : ""} ${isClicking ? "is-clicking" : ""}`}
-      />}
+        className={`bq-cursor-dot ${cursorMode !== "default" ? "is-active" : ""} ${
+          isClicking ? "is-clicking" : ""
+        } ${isVisible ? "is-visible" : ""}`}
+        aria-hidden="true"
+      />
       {/* Outer fluid trailing ring with contextual label */}
-      {!isTouch && <div
+      <div
         ref={ringRef}
-        className={`bq-cursor-ring mode-${cursorMode} ${isClicking ? "is-clicking" : ""}`}
+        className={`bq-cursor-ring mode-${cursorMode} ${
+          isClicking ? "is-clicking" : ""
+        } ${isVisible ? "is-visible" : ""}`}
+        aria-hidden="true"
       >
         {cursorText && <span className="bq-cursor-text">{cursorText}</span>}
-      </div>}
+      </div>
     </>
   );
 }

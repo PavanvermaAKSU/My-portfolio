@@ -30,3 +30,17 @@ global.ResizeObserver = class ResizeObserver {
   unobserve() { return null; }
   disconnect() { return null; }
 };
+
+// Prevent canvas APIs from crashing the test environment during intro animation setup
+HTMLCanvasElement.prototype.getContext = function getContext() {
+  return {
+    clearRect: () => {},
+    beginPath: () => {},
+    arc: () => {},
+    fill: () => {},
+    fillRect: () => {},
+    fillStyle: "",
+    globalAlpha: 1,
+    canvas: this,
+  };
+};

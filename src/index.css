@@ -6,13 +6,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 :root {
-  /* Palette — pure black, no color accents */
-  --black:        #000000;
-  --white:        #ffffff;
-  --dim:          rgba(255, 255, 255, 0.38);
-  --dimmer:       rgba(255, 255, 255, 0.18);
-  --border:       rgba(255, 255, 255, 0.10);
-  --border-light: rgba(255, 255, 255, 0.06);
+  /* Palette — grounded, premium, low-noise studio tones */
+  --black:        #0a0e0d;
+  --black-soft:   #111718;
+  --white:        #eff7f4;
+  --paper:        #dfe9e5;
+  --dim:          rgba(239, 247, 244, 0.68);
+  --dimmer:       rgba(239, 247, 244, 0.22);
+  --border:       rgba(223, 233, 229, 0.14);
+  --border-light: rgba(223, 233, 229, 0.08);
+  --accent:       #c9a66b;
+  --accent-soft:  #d8c7a2;
+  --teal:         #6daea1;
+  --teal-soft:    #99d0c4;
+  --rose:         #c8755d;
+  --amber:        #e3b86c;
 
   /* Typography */
   --font-tight: 'Inter Tight', -apple-system, sans-serif;

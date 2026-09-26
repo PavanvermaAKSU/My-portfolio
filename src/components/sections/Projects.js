@@ -1,20 +1,47 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { PROJECTS } from "../../data/portfolioData";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles, Layers } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
 export default function Projects({ onSelectProject }) {
   const [filter, setFilter] = useState("All");
 
-  const filterOptions = ["All", "Machine Learning", "Computer Vision", "Full-Stack", "Data Science"];
+  const filterOptions = [
+    "All",
+    "Machine Learning",
+    "Computer Vision",
+    "Full-Stack",
+    "Civic AI & Automation",
+  ];
 
   const filteredProjects = PROJECTS.filter((p) => {
     if (filter === "All") return true;
-    if (filter === "Machine Learning") return p.category?.toLowerCase().includes("machine learning") || p.tech?.includes("Machine Learning");
-    if (filter === "Computer Vision") return p.category?.toLowerCase().includes("computer vision") || p.tech?.includes("YOLO");
-    if (filter === "Full-Stack") return p.category?.toLowerCase().includes("full-stack") || p.tech?.includes("React.js");
-    if (filter === "Data Science") return p.category?.toLowerCase().includes("data") || p.tech?.includes("Data Analysis");
+    if (filter === "Machine Learning")
+      return (
+        p.category?.toLowerCase().includes("machine learning") ||
+        p.tech?.includes("Machine Learning") ||
+        p.id === "sales-forecast"
+      );
+    if (filter === "Computer Vision")
+      return (
+        p.category?.toLowerCase().includes("computer vision") ||
+        p.tech?.includes("YOLO") ||
+        p.id === "face-mask-detection"
+      );
+    if (filter === "Full-Stack")
+      return (
+        p.category?.toLowerCase().includes("full-stack") ||
+        p.category?.toLowerCase().includes("commercial") ||
+        p.tech?.includes("React")
+      );
+    if (filter === "Civic AI & Automation")
+      return (
+        p.category?.toLowerCase().includes("civic") ||
+        p.category?.toLowerCase().includes("automation") ||
+        p.id === "jansetu-ai" ||
+        p.id === "n8n-workflow"
+      );
     return true;
   });
 
@@ -23,12 +50,12 @@ export default function Projects({ onSelectProject }) {
       <div className="bq-chapter__shell">
         <div className="bq-chapter__header">
           <span className="bq-chapter__num">04 /</span>
-          <span className="bq-chapter__label">Selected Work</span>
+          <span className="bq-chapter__label">Project Exhibition Gallery</span>
           <h2 className="bq-chapter__title">
-            Things I've <em>built</em>.
+            Featured <em>intelligence</em> &amp; platforms.
           </h2>
           <p className="bq-chapter__subtitle">
-            Engineered models, algorithms, and applications designed for performance, precision, and utility.
+            Engineered models, algorithms, and applications designed for real-world utility, edge performance, and production scale.
           </p>
         </div>
 
@@ -61,7 +88,7 @@ export default function Projects({ onSelectProject }) {
               viewport={{ once: true, margin: "-8%" }}
               transition={{ duration: 0.55, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               data-cursor="view"
-              data-cursor-text="OPEN"
+              data-cursor-text="INSPECT"
             >
               <div className="bq-project-chapter__num">
                 {project.number || (idx + 1).toString().padStart(2, "0")}
@@ -74,6 +101,12 @@ export default function Projects({ onSelectProject }) {
                     <span className="bq-project-chapter__highlight-badge">
                       <Sparkles size={12} />
                       {Object.values(project.metrics)[0]}
+                    </span>
+                  )}
+                  {project.roomLabel && (
+                    <span className="bq-project-chapter__room-tag">
+                      <Layers size={11} />
+                      {project.roomLabel}
                     </span>
                   )}
                 </div>

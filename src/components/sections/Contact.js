@@ -51,13 +51,13 @@ export default function Contact() {
     <section id="contact" className="bq-chapter bq-contact-section">
       <div className="bq-chapter__shell">
         <div className="bq-chapter__header">
-          <span className="bq-chapter__num">06 /</span>
-          <span className="bq-chapter__label">Initiate Contact</span>
+          <span className="bq-chapter__num">07 /</span>
+          <span className="bq-chapter__label">Horizon Contact Studio</span>
           <h2 className="bq-chapter__title bq-contact-headline">
-            Let's build something <em>extraordinary</em>.
+            Let's build something <em>intelligent</em>.
           </h2>
           <p className="bq-chapter__subtitle">
-            Whether you have an impactful AI project, an industry engineering opening, or just want to connect — my inbox is always open.
+            Whether you have a transformative AI challenge, a production machine learning pipeline to engineer, or an impactful opening — my direct channel is always open.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function Contact() {
             </div>
 
             <div className="bq-contact__social-links">
-              <span className="bq-contact__label">Digital Presence</span>
+              <span className="bq-contact__label">Digital Presence & Credentials</span>
               <div className="bq-social-grid">
                 <a
                   href={PERSONAL_INFO.linkedin}
@@ -137,6 +137,19 @@ export default function Contact() {
                 >
                   <FaEnvelope size={18} />
                   <span>Email</span>
+                  <ArrowUpRight size={14} className="bq-social-arrow" />
+                </a>
+
+                <a
+                  href={PERSONAL_INFO.portfolio}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bq-social-btn"
+                  data-cursor="open"
+                  data-cursor-text="RESUME"
+                >
+                  <ArrowUpRight size={18} />
+                  <span>Live Portfolio</span>
                   <ArrowUpRight size={14} className="bq-social-arrow" />
                 </a>
               </div>
