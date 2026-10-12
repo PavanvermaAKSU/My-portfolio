@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EFF6FF" />
+      <stop offset="100%" stop-color="#DBEAFE" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8FAFC" />
+    </linearGradient>
+    <linearGradient id="flowLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="50%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#15803D" />
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0F172A" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Background decorative circular grid -->
+  <circle cx="300" cy="200" r="170" fill="url(#bgGlow)" />
+  <circle cx="300" cy="200" r="130" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="6 6" fill="none" />
+  <circle cx="300" cy="200" r="90" stroke="#93C5FD" stroke-width="1" fill="none" />
+
+  <!-- Left: Citizen Request Card -->
+  <g transform="translate(40, 90)" filter="url(#cardShadow)">
+    <rect width="170" height="190" rx="14" fill="url(#cardGrad)" stroke="#E2E8F0" stroke-width="1.5" />
+    <!-- Citizen Icon Header -->
+    <rect x="16" y="16" width="36" height="36" rx="8" fill="#EFF6FF" />
+    <circle cx="34" cy="28" r="6" fill="#2563EB" />
+    <path d="M24 44 C24 38, 44 38, 44 44" fill="#2563EB" />
+    <!-- Text Lines -->
+    <rect x="62" y="20" width="70" height="10" rx="4" fill="#142B4A" />
+    <rect x="62" y="36" width="50" height="8" rx="4" fill="#94A3B8" />
+    <!-- Speech bubble representation in Hindi/English -->
+    <rect x="16" y="68" width="138" height="60" rx="8" fill="#F1F5F9" />
+    <rect x="26" y="80" width="100" height="8" rx="3" fill="#64748B" />
+    <rect x="26" y="94" width="80" height="8" rx="3" fill="#94A3B8" />
+    <rect x="26" y="108" width="60" height="8" rx="3" fill="#CBD5E1" />
+    <!-- Audio wave badge -->
+    <rect x="16" y="142" width="74" height="26" rx="13" fill="#DBEAFE" />
+    <path d="M26 155 L28 155 M31 151 L31 159 M34 148 L34 162 M37 152 L37 158 M40 155 L40 155" stroke="#2563EB" stroke-width="2" stroke-linecap="round" />
+    <text x="46" y="159" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#1E40AF">आवाज़ / Voice</text>
+  </g>
+
+  <!-- Flow Line Citizen to Center -->
+  <path d="M210 185 C240 185, 240 195, 260 195" stroke="url(#flowLineGrad)" stroke-width="3" stroke-dasharray="4 4" fill="none" />
+
+  <!-- Center: AI Understanding & Digital Routing Core -->
+  <g transform="translate(250, 140)" filter="url(#cardShadow)">
+    <circle cx="50" cy="50" r="46" fill="#142B4A" />
+    <circle cx="50" cy="50" r="38" stroke="#38BDF8" stroke-width="2" fill="none" stroke-dasharray="4 2" />
+    <!-- AI Brain / Bridge Icon -->
+    <path d="M30 62 C38 46, 62 46, 70 62" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none" />
+    <circle cx="50" cy="38" r="6" fill="#38BDF8" />
+    <circle cx="38" cy="46" r="3" fill="#93C5FD" />
+    <circle cx="62" cy="46" r="3" fill="#93C5FD" />
+    <!-- Text -->
+    <text x="50" y="112" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#142B4A">JanSetu Engine</text>
+    <text x="50" y="126" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#64748B">Rewa District</text>
+  </g>
+
+  <!-- Flow Line Center to Right -->
+  <path d="M350 195 C370 195, 370 185, 390 185" stroke="url(#flowLineGrad)" stroke-width="3" fill="none" />
+
+  <!-- Right: Officer Action & Resolution Card -->
+  <g transform="translate(390, 90)" filter="url(#cardShadow)">
+    <rect width="170" height="190" rx="14" fill="url(#cardGrad)" stroke="#E2E8F0" stroke-width="1.5" />
+    <!-- Officer Badge -->
+    <rect x="16" y="16" width="36" height="36" rx="8" fill="#F0FDF4" />
+    <path d="M34 22 L42 26 L42 34 C42 40, 34 44, 34 44 C34 44, 26 40, 26 34 L26 26 Z" fill="#15803D" />
+    <path d="M31 32 L33 35 L38 29" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Header Text -->
+    <rect x="62" y="20" width="70" height="10" rx="4" fill="#142B4A" />
+    <rect x="62" y="36" width="55" height="8" rx="4" fill="#15803D" />
+    <!-- Workflow Stages -->
+    <rect x="16" y="68" width="138" height="28" rx="6" fill="#EFF6FF" />
+    <circle cx="28" cy="82" r="4" fill="#2563EB" />
+    <text x="38" y="86" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#1E40AF">Assigned to Dept</text>
+    <rect x="16" y="104" width="138" height="28" rx="6" fill="#F0FDF4" />
+    <circle cx="28" cy="118" r="4" fill="#15803D" />
+    <text x="38" y="122" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#166534">Action In Progress</text>
+    <!-- Tracking ID Badge -->
+    <rect x="16" y="142" width="138" height="26" rx="6" fill="#F1F5F9" />
+    <text x="85" y="159" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" fill="#0F172A">JS-REWA-2026-001</text>
+  </g>
+
+  <!-- Bottom District Grounding Label -->
+  <g transform="translate(180, 320)">
+    <rect width="240" height="34" rx="17" fill="#FFFFFF" stroke="#CBD5E1" />
+    <circle cx="20" cy="17" r="6" fill="#2563EB" />
+    <text x="34" y="21" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#1E293B">Transparent Workflow Timeline</text>
+  </g>
+</svg>

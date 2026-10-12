@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JanSetu AI - Citizen Portal | Rewa District</title>
+  <meta name="description" content="Citizen Portal for JanSetu AI. File grievances in simple Hindi or English, track status, and access service guidance." />
+  <meta property="og:title" content="JanSetu AI - Citizen Portal" />
+
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/citizen.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Demo Disclaimer Banner -->
+  <div class="demo-banner" role="banner">
+    <div class="demo-banner-content">
+      <span class="demo-badge-pill">DEMO PROTOTYPE</span>
+      <span data-i18n="demoNotice">DEMO PROTOTYPE | Sample Data | Not an Official Government Portal</span>
+    </div>
+    <button class="demo-reset-btn" data-action="reset-data" data-i18n="resetDemoData">Reset Demo Data</button>
+  </div>
+
+  <!-- Role Quick Switcher -->
+  <div class="role-bar">
+    <div class="role-bar-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span data-i18n="switchRole">Switch Role (Demo):</span>
+    </div>
+    <div class="role-nav-links">
+      <a href="citizen.html" class="role-chip active" data-role-switch="citizen">
+        <span data-i18n="roleCitizen">Citizen</span>
+      </a>
+      <a href="officer.html" class="role-chip" data-role-switch="officer">
+        <span data-i18n="roleOfficer">Officer</span>
+      </a>
+      <a href="administration.html" class="role-chip" data-role-switch="admin">
+        <span data-i18n="roleAdmin">District Admin</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="JanSetu AI Home">
+        <div class="brand-icon-box">
+          <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="32" height="32" />
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-title" data-i18n="appTitle">जनसेतु AI (JanSetu AI)</span>
+          <span class="brand-subtitle" data-i18n="appSubtitle">रीवा जिला डिजिटल गवर्नेंस एवं समाधान मंच</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link" data-i18n="navHome">Home</a>
+        <a href="citizen.html" class="nav-link active" data-i18n="navCitizen">Citizen Portal</a>
+        <a href="officer.html" class="nav-link" data-i18n="navOfficer">Officer Portal</a>
+        <a href="administration.html" class="nav-link" data-i18n="navAdmin">District Administration</a>
+        <a href="services.html" class="nav-link" data-i18n="navServices">Services & FAQ</a>
+        <a href="tracking.html" class="nav-link" data-i18n="navTracking">Track Complaint</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="lang-toggle-btn" aria-label="Switch Language">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span data-i18n="languageName">English</span>
+        </button>
+        <button class="mobile-nav-toggle" aria-label="Open Navigation Menu" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Citizen Workspace -->
+  <main id="main-content" class="main-content">
+    <div class="page-container">
+      
+      <!-- Welcome Hero -->
+      <section class="citizen-hero">
+        <h1 class="citizen-greeting" data-i18n="citizenGreeting">
+          नमस्ते! आज हम आपकी क्या मदद कर सकते हैं?
+        </h1>
+        <p class="citizen-subgreeting" data-i18n="citizenSubgreeting">
+          रीवा जिला नागरिक शिकायत एवं लोक सेवा सहायता पोर्टल
+        </p>
+
+        <!-- 3 Prominent Quick Action Cards -->
+        <div class="quick-actions-grid">
+          <a href="#wizard" class="quick-action-card">
+            <div class="quick-action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div>
+              <div class="quick-action-title" data-i18n="citizenActionFile">शिकायत दर्ज करें</div>
+              <div class="quick-action-desc">4 सरल चरणों में अपनी समस्या का विवरण व स्थान दर्ज करें</div>
+            </div>
+          </a>
+
+          <a href="tracking.html" class="quick-action-card">
+            <div class="quick-action-icon" style="background:#F0FDF4; color:var(--color-success);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div class="quick-action-title" data-i18n="citizenActionTrack">अपनी शिकायत ट्रैक करें</div>
+              <div class="quick-action-desc">ट्रैकिंग ID डालकर अधिकारी की जांच व प्रगति देखें</div>
+            </div>
+          </a>
+
+          <a href="services.html" class="quick-action-card">
+            <div class="quick-action-icon" style="background:#FFFBEB; color:var(--color-warning);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="quick-action-title" data-i18n="citizenActionServices">सरकारी सेवा की जानकारी लें</div>
+              <div class="quick-action-desc">आय प्रमाण पत्र, नल संयोजन व दस्तावेजों का मार्गदर्शन</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- AI Assistant Card (Simulated) -->
+      <section id="assistant" class="assistant-card">
+        <div class="assistant-header">
+          <div class="assistant-header-left">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div style="font-weight:700; font-size:var(--text-base);" data-i18n="assistantTitle">जनसेतु AI सहायक (सिम्युलेटेड)</div>
+              <div style="font-size:0.75rem; opacity:0.85;" data-i18n="assistantSub">आप अपनी समस्या लिखकर या उपलब्ध होने पर बोलकर बता सकते हैं।</div>
+            </div>
+          </div>
+          <span class="assistant-badge">Simulated AI / Rule-Based</span>
+        </div>
+
+        <div class="assistant-body">
+          <!-- Chat History -->
+          <div id="assistant-chat-window" class="assistant-chat-window">
+            <div class="chat-msg chat-msg-bot">
+              <div class="chat-avatar chat-avatar-bot">JS</div>
+              <div>
+                <div class="chat-bubble">
+                  नमस्ते! मैं जनसेतु AI सहायक हूँ। आप अपनी सार्वजनिक समस्या (जैसे पानी, सड़क, स्ट्रीटलाइट या सरकारी प्रमाण पत्र) के बारे में बताएं। मैं संबंधित विभाग और शिकायत प्रक्रिया में आपकी सहायता करूँगा।
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Prompt Chips -->
+          <div style="font-size:var(--text-xs); color:var(--color-text-secondary); margin-bottom:0.4rem; font-weight:600;" data-i18n="examplePromptsLabel">
+            उदाहरण के लिए:
+          </div>
+          <div class="prompt-chips-bar">
+            <button type="button" class="prompt-chip" data-prompt="मेरे मोहल्ले में तीन दिन से पानी नहीं आ रहा है।">
+              "मेरे मोहल्ले में तीन दिन से पानी नहीं आ रहा है।"
+            </button>
+            <button type="button" class="prompt-chip" data-prompt="हमारी सड़क पर बहुत गहरे गड्ढे हैं।">
+              "हमारी सड़क पर गड्ढे हैं।"
+            </button>
+            <button type="button" class="prompt-chip" data-prompt="मेरे इलाके की स्ट्रीटलाइट एक हफ्ते से बंद है।">
+              "मेरे इलाके की स्ट्रीटलाइट बंद है।"
+            </button>
+            <button type="button" class="prompt-chip" data-prompt="मुझे आय प्रमाण पत्र बनवाने की जानकारी चाहिए।">
+              "मुझे आय प्रमाण पत्र की जानकारी चाहिए।"
+            </button>
+          </div>
+
+          <!-- Chat Input Row -->
+          <div class="chat-input-row">
+            <input 
+              type="text" 
+              id="assistant-chat-input" 
+              class="form-control chat-text-input" 
+              data-i18n-placeholder="assistantPlaceholder" 
+              placeholder="अपनी समस्या लिखें (जैसे: हमारे मोहल्ले में 3 दिन से पानी नहीं आ रहा है)..." 
+              aria-label="Ask assistant in Hindi or English"
+            />
+            <button type="button" id="assistant-mic-btn" class="btn btn-outline btn-icon-only" title="Voice Input" aria-label="Start Voice Input">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+            <button type="button" id="assistant-send-btn" class="btn btn-primary" data-i18n="assistantSend">
+              विश्लेषण करें
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category Shortcuts -->
+      <section style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: var(--text-xl); font-weight: 800; color: var(--color-primary-navy); margin-bottom: 0.35rem;" data-i18n="quickCategoriesTitle">
+          मुख्य समस्या श्रेणियां
+        </h2>
+        <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: 1.25rem;" data-i18n="quickCategoriesSub">
+          सीधे आवेदन शुरू करने के लिए संबंधित श्रेणी चुनें
+        </p>
+
+        <div class="categories-grid">
+          <div class="category-card" data-cat-shortcut="water">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <span class="category-name">Water Supply<br/>जल आपूर्ति</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="road">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19L9 5 M20 19L15 5 M12 6L12 9 M12 12L12 15 M12 18L12 21"/></svg>
+            </div>
+            <span class="category-name">Roads & Potholes<br/>सड़क व गड्ढे</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="streetlight">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+            </div>
+            <span class="category-name">Streetlights<br/>स्ट्रीटलाइट</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="sanitation">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </div>
+            <span class="category-name">Sanitation<br/>कचरा व स्वच्छता</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="drainage">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20 M2 6h20 M2 18h20"/></svg>
+            </div>
+            <span class="category-name">Drainage<br/>नाली व जलभराव</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="electricity">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <span class="category-name">Electricity<br/>बिजली समस्या</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="transport">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
+            <span class="category-name">Public Transport<br/>सार्वजनिक परिवहन</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="certificate">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <span class="category-name">Govt Services<br/>प्रमाण पत्र सेवा</span>
+          </div>
+
+          <div class="category-card" data-cat-shortcut="other">
+            <div class="category-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <span class="category-name">Other<br/>अन्य समस्या</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Guided Complaint Submission Form Wizard -->
+      <section id="wizard" class="wizard-container">
+        <!-- Form Container -->
+        <div id="wizard-form-box">
+          <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: var(--text-xl); font-weight: 800; color: var(--color-primary-navy); margin-bottom: 0.25rem;" data-i18n="wizardTitle">
+              मार्गदर्शित शिकायत दर्ज करें (File Demo Complaint)
+            </h2>
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary);">
+              कृपया नीचे 4 चरणों में अपनी समस्या स्पष्ट रूप से दर्ज करें।
+            </p>
+          </div>
+
+          <!-- Stepper Bar -->
+          <nav class="stepper-nav" aria-label="Complaint Submission Steps">
+            <div class="step-item active">
+              <span class="step-number">1</span>
+              <span class="step-title" data-i18n="wizardStep1">1. समस्या का विवरण</span>
+            </div>
+            <div class="step-item">
+              <span class="step-number">2</span>
+              <span class="step-title" data-i18n="wizardStep2">2. श्रेणी पुष्टि</span>
+            </div>
+            <div class="step-item">
+              <span class="step-number">3</span>
+              <span class="step-title" data-i18n="wizardStep3">3. स्थान विवरण</span>
+            </div>
+            <div class="step-item">
+              <span class="step-number">4</span>
+              <span class="step-title" data-i18n="wizardStep4">4. समीक्षा एवं पुष्टि</span>
+            </div>
+          </nav>
+
+          <form id="citizen-complaint-form" novalidate>
+            <!-- Step 1: Describe the Problem -->
+            <div class="step-pane active" id="pane-step-1">
+              <div class="form-group">
+                <label for="wizard-desc-input" class="form-label">
+                  <span data-i18n="descLabel">अपनी समस्या का पूरा विवरण दें</span>
+                  <span class="required">*</span>
+                </label>
+                <textarea 
+                  id="wizard-desc-input" 
+                  class="form-control" 
+                  rows="4" 
+                  data-i18n-placeholder="descPlaceholder" 
+                  placeholder="समस्या स्पष्ट लिखें (जैसे: पाइपलाइन लीकेज, सड़क पर गड्ढे, स्ट्रीटलाइट खराब)..."
+                  required
+                ></textarea>
+                <div class="form-help" data-i18n="descHelp">समस्या कब से है और मोहल्ले पर क्या प्रभाव पड़ रहा है, संक्षेप में लिखें।</div>
+                <div id="step-1-error" class="form-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="wizard-photo-input" class="form-label" data-i18n="uploadPhotoLabel">फोटो प्रमाण संलग्न करें (वैकल्पिक)</label>
+                <input type="file" id="wizard-photo-input" class="form-control" accept="image/jpeg,image/png,image/webp" />
+                <div class="form-help" data-i18n="photoHelp">JPG, PNG अधिकतम 5MB। केवल डेमो प्रदर्शन के लिए स्थानीय रूप से सुरक्षित।</div>
+                <div id="wizard-photo-preview"></div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
+                <button type="button" class="btn btn-primary" data-wizard-next data-i18n="nextStep">
+                  अगले चरण पर जाएं (Continue)
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Confirm Category -->
+            <div class="step-pane" id="pane-step-2">
+              <div style="background:var(--color-light-blue); border:1px solid #BFDBFE; border-radius:var(--radius-md); padding:1rem; margin-bottom:1.5rem;">
+                <div style="font-weight:700; font-size:var(--text-sm); color:var(--color-primary-navy); margin-bottom:0.25rem;" data-i18n="catSuggestNotice">
+                  विवरण के आधार पर सुझाई गई श्रेणी। कृपया आवश्यकतानुसार जांचें या बदलें।
+                </div>
+                <div style="font-size:var(--text-xs); color:var(--color-primary-blue);">
+                  <span data-i18n="deptAutoAssigned">संभावित विभाग: </span>
+                  <strong id="wizard-suggested-dept">Municipal Corporation Rewa (नगर निगम)</strong>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="wizard-category-select" class="form-label" data-i18n="catLabel">समस्या की श्रेणी चुनें</label>
+                <select id="wizard-category-select" class="form-control"></select>
+                <div id="step-2-error" class="form-error"></div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+                <button type="button" class="btn btn-outline" data-wizard-prev data-i18n="prevStep">पीछे जाएं</button>
+                <button type="button" class="btn btn-primary" data-wizard-next data-i18n="nextStep">अगले चरण पर जाएं</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Location -->
+            <div class="step-pane" id="pane-step-3">
+              <div class="form-group">
+                <label for="wizard-locality-select" class="form-label">
+                  <span data-i18n="locLabel">रीवा में आपका इलाका / मोहल्ला</span>
+                  <span class="required">*</span>
+                </label>
+                <select id="wizard-locality-select" class="form-control" required></select>
+                <div id="step-3-error" class="form-error"></div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;" class="loc-subfields-grid">
+                <div class="form-group">
+                  <label for="wizard-ward-input" class="form-label" data-i18n="wardLabel">वार्ड क्रमांक (वैकल्पिक)</label>
+                  <input type="text" id="wizard-ward-input" class="form-control" data-i18n-placeholder="wardPlaceholder" placeholder="जैसे वार्ड 14" />
+                </div>
+                <div class="form-group">
+                  <label for="wizard-landmark-input" class="form-label" data-i18n="landmarkLabel">प्रमुख पहचान स्थल (वैकल्पिक)</label>
+                  <input type="text" id="wizard-landmark-input" class="form-control" data-i18n-placeholder="landmarkPlaceholder" placeholder="जैसे प्राथमिक स्कूल के पास" />
+                </div>
+              </div>
+
+              <!-- Schematic Location Preview Box -->
+              <div class="schematic-loc-box">
+                <div style="font-weight:700; color:var(--color-primary-navy); margin-bottom:0.25rem;">रीवा नगर सांकेतिक मानचित्र (Demo Map)</div>
+                <div style="font-size:var(--text-xs); color:var(--color-text-secondary); margin-bottom:0.75rem;" data-i18n="mapHelp">
+                  रीवा नगर सीमा का सांकेतिक प्रदर्शन।
+                </div>
+                <button type="button" id="wizard-gps-btn" class="btn btn-sm btn-outline" data-i18n="useGpsBtn">
+                  मेरा स्थान पहचानें (डेमो जीपीएस)
+                </button>
+                <div id="wizard-gps-status" style="font-size:var(--text-xs); margin-top:0.35rem;" data-i18n="gpsStatusText">
+                  जीपीएस अनिवार्य नहीं है। आप अपना मोहल्ला सीधे चुन सकते हैं।
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+                <button type="button" class="btn btn-outline" data-wizard-prev data-i18n="prevStep">पीछे जाएं</button>
+                <button type="button" class="btn btn-primary" data-wizard-next data-i18n="nextStep">समीक्षा पर जाएं</button>
+              </div>
+            </div>
+
+            <!-- Step 4: Review and Confirm -->
+            <div class="step-pane" id="pane-step-4">
+              <div style="margin-bottom:1.5rem;">
+                <h3 style="font-size:var(--text-base); font-weight:700; color:var(--color-primary-navy); margin-bottom:0.35rem;" data-i18n="reviewSummaryTitle">
+                  सबमिट करने से पहले विवरण की समीक्षा करें
+                </h3>
+                <p style="font-size:var(--text-xs); color:var(--color-danger); background:var(--color-danger-bg); border:1px solid var(--color-danger-border); padding:0.75rem; border-radius:var(--radius-md);" data-i18n="reviewDisclosure">
+                  सूचना: यह एक छात्र डेमो अनुरोध है। यह केवल आपके ब्राउज़र में सुरक्षित रहेगा और अधिकारी पोर्टल सिमुलेशन में दिखेगा। यह किसी वास्तविक सरकारी कार्यालय में नहीं भेजा जाएगा।
+                </p>
+              </div>
+
+              <!-- Review Card -->
+              <div class="review-summary-card">
+                <div class="review-row">
+                  <div class="review-key">समस्या विवरण:</div>
+                  <div class="review-val" id="rev-desc">—</div>
+                </div>
+                <div class="review-row">
+                  <div class="review-key">समस्या श्रेणी:</div>
+                  <div class="review-val" id="rev-cat">—</div>
+                </div>
+                <div class="review-row">
+                  <div class="review-key">संबंधित विभाग:</div>
+                  <div class="review-val" id="rev-dept">—</div>
+                </div>
+                <div class="review-row">
+                  <div class="review-key">स्थान व वार्ड:</div>
+                  <div class="review-val" id="rev-loc">—</div>
+                </div>
+                <div class="review-row">
+                  <div class="review-key">संलग्न प्रमाण:</div>
+                  <div class="review-val" id="rev-evidence">—</div>
+                </div>
+              </div>
+
+              <div style="margin-bottom:1.5rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; font-size:var(--text-xs); font-weight:600; cursor:pointer;">
+                  <input type="checkbox" id="wizard-confirm-check" checked required />
+                  <span data-i18n="confirmCheck">मैं पुष्टि करता/करती हूँ कि यह एक वास्तविक सार्वजनिक समस्या का डेमो विवरण है।</span>
+                </label>
+              </div>
+
+              <div style="display:flex; justify-content:space-between;">
+                <button type="button" class="btn btn-outline" data-wizard-prev data-i18n="prevStep">पीछे जाएं</button>
+                <button type="submit" class="btn btn-primary btn-lg" data-i18n="submitComplaintBtn">
+                  पुष्टि करें और डेमो अनुरोध दर्ज करें
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Success Screen Box (Revealed upon submission) -->
+        <div id="wizard-success-box" class="success-card" style="display: none;">
+          <div class="success-icon-badge">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 style="font-size:var(--text-2xl); font-weight:800; color:var(--color-primary-navy); margin-bottom:0.5rem;" data-i18n="successTitle">
+            डेमो शिकायत सफलतापूर्वक दर्ज हुई!
+          </h2>
+          <p style="font-size:var(--text-sm); color:var(--color-text-secondary); max-width:540px; margin:0 auto;" data-i18n="successSub">
+            आपकी समस्या प्रोटोटाइप प्रणाली में दर्ज हो चुकी है और अधिकारी समीक्षा सूची में जुड़ गई है।
+          </p>
+
+          <div style="margin: 1.5rem 0;">
+            <div style="font-size:var(--text-xs); color:var(--color-text-secondary); text-transform:uppercase; font-weight:600;" data-i18n="trackingIdLabel">
+              आपकी डेमो ट्रैकिंग आईडी:
+            </div>
+            <div id="success-tracking-id" class="tracking-id-highlight">
+              JS-REWA-2026-1006
+            </div>
+          </div>
+
+          <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem;">
+            <a href="tracking.html" id="success-track-btn" class="btn btn-primary" data-i18n="trackNowBtn">
+              इस अनुरोध को तुरंत ट्रैक करें
+            </a>
+            <a href="officer.html" class="btn btn-secondary" data-i18n="goToOfficerBtn">
+              अधिकारी पोर्टल में जांचें
+            </a>
+            <a href="citizen.html" class="btn btn-outline" data-i18n="backToCitizenBtn">
+              नागरिक होम पर लौटें
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Complaints Section -->
+      <section style="margin-bottom: 3.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.5rem;">
+          <div>
+            <h2 style="font-size:var(--text-xl); font-weight:800; color:var(--color-primary-navy);" data-i18n="recentComplaintsTitle">
+              आपकी हालिया डेमो शिकायतें
+            </h2>
+            <p style="font-size:var(--text-xs); color:var(--color-text-secondary);" data-i18n="recentComplaintsSub">
+              इस ब्राउज़र सत्र में दर्ज की गई शिकायतें
+            </p>
+          </div>
+          <a href="tracking.html" class="btn btn-sm btn-outline" data-i18n="viewAllTrack">ID द्वारा ट्रैक करें</a>
+        </div>
+
+        <div id="citizen-recent-complaints"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+            <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="28" height="28" />
+            <span style="font-size:var(--text-lg); font-weight:700; color:#FFF;">JanSetu AI</span>
+          </div>
+          <p data-i18n="tagline">नागरिक की समस्या से समाधान तक: डिजिटल, समझदारीपूर्ण और पारदर्शी।</p>
+          <div style="margin-top:1rem; font-size:var(--text-xs); color:#64748B;">
+            Rewa District Citizen Services Prototype
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Demo Portals</div>
+          <div class="footer-links">
+            <a href="citizen.html" data-i18n="navCitizen">Citizen Portal</a>
+            <a href="officer.html" data-i18n="navOfficer">Officer Portal</a>
+            <a href="administration.html" data-i18n="navAdmin">District Administration</a>
+            <a href="tracking.html" data-i18n="navTracking">Track Complaint</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Documentation</div>
+          <div class="footer-links">
+            <a href="services.html" data-i18n="navServices">Services Guidance</a>
+            <a href="README.md" target="_blank">Project README</a>
+            <a href="docs/demo-script.md" target="_blank">Hackathon Demo Script</a>
+            <a href="docs/prototype-limitations.md" target="_blank">Prototype Boundaries</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-academic-card">
+            <strong>Team Vindhya Innovators</strong>
+            <div>AKS University, Satna / Rewa Region</div>
+            <div style="margin-top:0.35rem; color:#94A3B8;">
+              iComputex TechFest 2026<br />
+              Smart Rewa 2030 Hackathon
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 JanSetu AI · Academic Hackathon Prototype · Not an official government website.
+        </div>
+        <div style="display:flex; gap:1rem;">
+          <button class="demo-reset-btn" data-action="reset-data">Reset Demo Data</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/complaint-service.js"></script>
+  <script src="js/localization.js"></script>
+  <script src="js/ai-simulator.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

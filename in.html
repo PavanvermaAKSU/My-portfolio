@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050d16">
+<title>कुमकुम के लिए 🌙</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Mukta:wght@300;400;600&display=swap">
+<style>
+:root{--ink:#050d16;--ivory:#f3ead8;--amber:#ffb454;--aqua:#7fd6c9;color-scheme:dark}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:radial-gradient(120% 100% at 50% 0,#0d2233,var(--ink) 70%);color:var(--ivory);font-family:Mukta,system-ui,sans-serif;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
+body{height:100dvh;position:fixed;inset:0;width:100%}
+#c{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.scene{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:safe center;text-align:center;padding:max(22px,env(safe-area-inset-top)) 22px max(26px,env(safe-area-inset-bottom));overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;opacity:0;visibility:hidden;transition:opacity 1.2s,visibility 1.2s,transform 1.2s;transform:translateY(14px)}
+.scene.on{opacity:1;visibility:visible;transform:none}
+.scene.low{justify-content:safe flex-end;padding-bottom:max(6vh,26px)}
+.d{font-family:"Tiro Devanagari Hindi",serif;font-style:italic}
+.big{font-size:clamp(1.9rem,8vw,3.6rem);line-height:1.45;max-width:14em;text-shadow:0 0 30px rgba(255,180,84,.35),0 2px 20px #000}
+.med{font-size:clamp(1.5rem,6vw,2.4rem);line-height:1.5;max-width:15em;text-shadow:0 2px 20px #000}
+.sm{font-size:.95rem;opacity:.7;margin-top:14px;letter-spacing:.03em}
+.w{display:inline-block;opacity:0;transform:translateY(18px);filter:blur(6px);animation:wi .9s forwards}
+@keyframes wi{to{opacity:1;transform:none;filter:none}}
+button{font:600 1.05rem Mukta,sans-serif;min-height:52px;color:#1a1204;background:linear-gradient(135deg,#ffd58a,var(--amber));border:0;border-radius:999px;padding:12px 40px;margin-top:28px;cursor:pointer;box-shadow:0 0 0 0 rgba(255,180,84,.5);animation:pu 2.6s infinite;touch-action:manipulation}
+button:active{transform:scale(.96)}button:focus-visible{outline:2px solid var(--aqua);outline-offset:4px}
+@media (max-height:640px){.big{font-size:1.7rem}#hero{width:90px!important;height:90px!important;margin-bottom:10px}#letter{min-height:7em}}
+@keyframes pu{70%{box-shadow:0 0 0 22px rgba(255,180,84,0)}}
+.hide{display:none!important}
+#mu{position:fixed;z-index:5;top:max(14px,env(safe-area-inset-top));right:14px;width:44px;height:44px;min-height:0;padding:0;margin:0;font-size:1.1rem;background:rgba(255,255,255,.08);color:var(--ivory);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px);animation:none;box-shadow:none;display:none}
+#cards{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;width:100vw;margin:0 -22px;padding:22px 13vw 26px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#cards::-webkit-scrollbar{display:none}
+.card{flex:0 0 min(74vw,300px);min-width:0;scroll-snap-align:center;text-align:left;padding:12px 12px 20px;border-radius:22px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border:1px solid rgba(243,234,216,.22);backdrop-filter:blur(14px);box-shadow:0 24px 50px rgba(0,0,0,.45);transform:perspective(900px) rotateY(-6deg)}
+.card:nth-child(even){transform:perspective(900px) rotateY(6deg)}
+.ph{height:min(48vw,210px);border-radius:14px;background:linear-gradient(135deg,#123a4a,#b47a2c) center/cover;display:grid;place-items:center;font-size:2.4rem}
+.card b{display:block;font:italic 1.4rem "Tiro Devanagari Hindi",serif;color:var(--amber);margin:14px 4px 6px}
+.card span{display:block;margin:0 4px;line-height:1.6;font-size:1rem;opacity:.92}
+#days{color:var(--aqua);font-size:1.2rem;margin-top:4px}
+#hero{width:128px;height:128px;border-radius:50%;border:2px solid var(--amber);margin-bottom:20px;box-shadow:0 0 0 8px rgba(255,180,84,.12),0 0 50px rgba(127,214,201,.5)}
+#letter{font:italic clamp(1.2rem,4.8vw,1.7rem)/1.85 "Tiro Devanagari Hindi",serif;max-width:22em;white-space:pre-wrap;min-height:9em;text-shadow:0 2px 18px #000}
+.sig{font-size:1.4rem;color:var(--amber);margin-top:8px;min-height:2em}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<button id="mu" aria-label="संगीत">🔊</button>
+
+<section class="scene on" id="s0">
+  <p class="sm" style="margin:0 0 18px">पवन की ओर से</p>
+  <h1 class="d big">दूरी सिर्फ़ एक गिनती है</h1>
+  <p class="sm">हेडफ़ोन लगाओ और आवाज़ चालू रखो 🎧</p>
+  <button id="open">शुरू करो</button>
+</section>
+<section class="scene low" id="s1"><div id="line" class="d big" style="min-height:6em;display:flex;align-items:center;justify-content:center"></div><p class="sm">आगे बढ़ने के लिए स्क्रीन छुओ</p></section>
+<section class="scene low" id="s2"><div id="bd" class="d big"></div></section>
+<section class="scene" id="s3">
+  <h2 class="d med" id="memT"></h2><div id="days" class="d"></div>
+  <div id="cards"></div>
+  <p class="sm" style="margin-top:0">← उँगली से सरकाओ →</p>
+  <button id="next3">आख़िरी बात 💌</button>
+</section>
+<section class="scene low" id="s4">
+  <div class="ph" id="hero" style="height:128px"></div>
+  <div id="letter"></div><div class="sig d" id="sig"></div>
+  <button id="again" class="hide">फिर से देखो</button>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ✏️ यहाँ बदलो: नाम, बातें, यादें, चिट्ठी, तस्वीरें */
+const CONFIG={
+  name:"कुमकुम",from:"हमेशा तुम्हारा, पवन",since:"2021-06-26",hero:"photo-main.jpg",memT:"हमारी कहानी",
+  story:[["एक तरफ़ मैं… दूसरी तरफ़ तुम।",14],["बीच में मीलों की दूरी, पर दिल में सिर्फ़ तुम।",10.5],["26 जून से आज तक, हर रात यही आसमान हमें जोड़ता रहा।",7],["आज मैं इसी आसमान से तुम्हारे पास आ रहा हूँ…",3.5]],
+  birthday:"जन्मदिन मुबारक, {name} 🎂",
+  memories:[
+    ["26 जून","इसी दिन हमारी बातें शुरू हुई थीं। तब पता नहीं था कि यही मेरी पूरी दुनिया बन जाएगी।","photo1.jpg"],
+    ["तुमने इंतज़ार करवाया","'हाँ' कहने में तुमने बहुत वक़्त लिया, पर हर पल का इंतज़ार क़ीमती था।","photo2.jpg"],
+    ["मेरी भोली-सी टीचर","सबके सामने कितनी मासूम और शर्मीली, और बस मेरे सामने खिलखिलाती हुई।","photo3.jpg"],
+    ["5+ साल, मीलों की दूरी","दूरी ने हमें कभी दूर नहीं किया। हर बार और पास ही किया।","photo4.jpg"]],
+  letter:"प्रिय {name},\n\nतुम बच्चों को आगे बढ़ना सिखाती हो, और मुझे तुमने प्यार करना सिखाया।\n\nमीलों दूर होकर भी तुम हर पल मेरे पास हो।\n\nजन्मदिन मुबारक, मेरी जान।\nमैं तुमसे बहुत प्यार करता हूँ।"
+};
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms)),fill=t=>t.replace(/{name}/g,CONFIG.name);
+
+/* ===== 3D दुनिया: दो सितारे, धागा, तारों भरा आसमान, दिल ===== */
+const R=new THREE.WebGLRenderer({canvas:$("c"),antialias:true,alpha:true});R.setPixelRatio(Math.min(devicePixelRatio,2));
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(55,1,.1,200);C.position.z=11;
+function rs(){R.setSize(innerWidth,innerHeight);C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix()}addEventListener("resize",rs);rs();
+const AD=THREE.AdditiveBlending;
+function glow(c){const k=document.createElement("canvas");k.width=k.height=128;const g=k.getContext("2d"),r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,"#fff");r.addColorStop(.25,c);r.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=r;g.fillRect(0,0,128,128);return new THREE.CanvasTexture(k)}
+function orb(c){const g=new THREE.Group(),s=new THREE.Sprite(new THREE.SpriteMaterial({map:glow(c),blending:AD,depthWrite:false}));s.scale.set(3.4,3.4,1);
+ const core=new THREE.Mesh(new THREE.SphereGeometry(.26,24,24),new THREE.MeshBasicMaterial({color:"#fff"}));
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.62,.012,8,64),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.7}));ring.rotation.x=1.1;
+ g.add(s,core,ring);g.ring=ring;S.add(g);return g}
+const A=orb("#ffb454"),B=orb("#7fd6c9");
+function cloud(n,size,fn){const g=new THREE.BufferGeometry(),p=new Float32Array(n*3),c=new Float32Array(n*3);
+ for(let i=0;i<n;i++){const v=fn(i);p.set(v[0],i*3);c.set(v[1],i*3)}
+ g.setAttribute("position",new THREE.BufferAttribute(p,3));g.setAttribute("color",new THREE.BufferAttribute(c,3));
+ return new THREE.Points(g,new THREE.PointsMaterial({size,vertexColors:true,transparent:true,blending:AD,depthWrite:false}))}
+const stars=cloud(1600,.13,()=>{const r=8+Math.random()*40,a=Math.random()*6.28,b=Math.acos(2*Math.random()-1),k=.6+Math.random()*.4;return[[r*Math.sin(b)*Math.cos(a),r*Math.sin(b)*Math.sin(a),r*Math.cos(b)],[k,k*.95,k*.85]]});S.add(stars);
+const thread=cloud(90,.09,i=>[[0,0,0],i%2?[1,.7,.33]:[.5,.84,.79]]);S.add(thread);
+const pulse=new THREE.Sprite(new THREE.SpriteMaterial({map:glow("#f3ead8"),blending:AD,depthWrite:false}));pulse.scale.set(1,1,1);S.add(pulse);
+const N=1300,heart=cloud(N,.075,i=>[[0,0,0],[0,0,0]]),hp=heart.geometry.attributes.position,hc=heart.geometry.attributes.color,ht=new Float32Array(N*3);
+for(let i=0;i<N;i++){const t=Math.random()*6.283,r=Math.pow(Math.random(),.35),x=16*Math.pow(Math.sin(t),3),y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+ ht.set([x*r,y*r,(Math.random()-.5)*5*r],i*3);hp.array.set([(Math.random()-.5)*60,(Math.random()-.5)*60,(Math.random()-.5)*60],i*3);
+ const m=(x*r+16)/32;hc.array.set([.5+.5*m,.84-.14*m,.79-.45*m],i*3)}
+heart.material.opacity=0;S.add(heart);
+let bursts=[];function burst(){const n=320,v=[],g=cloud(n,.11,()=>{const c=Math.random()<.5?[1,.75,.35]:[.95,.92,.85];return[[0,0,0],c]});
+ for(let i=0;i<n;i++){const a=Math.random()*6.28,b=Math.acos(2*Math.random()-1),s=.04+Math.random()*.12;v.push([s*Math.sin(b)*Math.cos(a),s*Math.sin(b)*Math.sin(a),s*Math.cos(b)])}
+ g.material.opacity=1;S.add(g);bursts.push({g,v,l:1})}
+let yO=0,sep=14,sepT=14,tm=0,heartOn=false,px=0,py=0;
+addEventListener("pointermove",e=>{px=e.clientX/innerWidth-.5;py=e.clientY/innerHeight-.5});
+const cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+(function loop(){requestAnimationFrame(loop);tm+=.016;sep+=(sepT-sep)*.018;
+ const P=C.aspect<1,f=Math.min(1,C.aspect*.85);yO+=((heartOn?(P?2.6:0):(P?1.5:0))-yO)*.03;const k=cl((sep-1)/3,0,1),w=Math.sin(tm*.4)*.35*k+tm*1.1*(1-k),r=sep/2;
+ A.position.set(-Math.cos(w)*r*f,yO+Math.sin(tm)*.25,-Math.sin(w)*r*.6);B.position.set(Math.cos(w)*r*f,yO+Math.sin(tm*.9+1)*.25,Math.sin(w)*r*.6);
+ A.ring.rotation.z=B.ring.rotation.z=tm;
+ const pos=thread.geometry.attributes.position;for(let i=0;i<90;i++){const t=i/89;pos.setXYZ(i,A.position.x+(B.position.x-A.position.x)*t,A.position.y+(B.position.y-A.position.y)*t+Math.sin(t*3.14)*.7*k+Math.sin(t*12+tm*3)*.05,A.position.z+(B.position.z-A.position.z)*t)}pos.needsUpdate=true;
+ thread.material.opacity=k*.9;const pt=(tm*.25)%1;pulse.position.lerpVectors(A.position,B.position,pt);pulse.position.y+=Math.sin(pt*3.14)*.7*k;pulse.material.opacity=k;
+ stars.rotation.y=tm*.012;stars.rotation.x=tm*.005;
+ C.position.x+=(px*2-C.position.x)*.03;C.position.y+=(-py*1.4-C.position.y)*.03;C.position.z+=((11+(P?(1-C.aspect)*5:0)-(14-sep)*.1)-C.position.z)*.02;C.lookAt(0,0,0);
+ if(heartOn){const s=.14*Math.min(1,C.aspect*1.7),a=hp.array;heart.position.y=yO;for(let i=0;i<N*3;i++)a[i]+=(ht[i]*s-a[i])*.03;hp.needsUpdate=true;heart.material.opacity=Math.min(.95,heart.material.opacity+.006);heart.rotation.y=Math.sin(tm*.5)*.5;A.scale.setScalar(.6);B.scale.setScalar(.6)}
+ bursts=bursts.filter(b=>{b.l-=.005;const a=b.g.geometry.attributes.position;for(let i=0;i<b.v.length;i++)a.setXYZ(i,a.getX(i)+b.v[i][0],a.getY(i)+b.v[i][1]-.0008*(1-b.l)*80,a.getZ(i)+b.v[i][2]);a.needsUpdate=true;b.g.material.opacity=Math.max(b.l,0);if(b.l<=0){S.remove(b.g);return false}return true});
+ R.render(S,C)})();
+
+/* ===== संगीत: बिना किसी फ़ाइल के, ब्राउज़र ख़ुद बनाता है ===== */
+let AC,master,padBus,muted=false;
+const mf=m=>440*Math.pow(2,(m-69)/12);
+function tone(m,t,d,type,v,dest,att=.01){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=mf(m);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(dest);o.start(t);o.stop(t+d+.1)}
+function initAudio(){AC=new(window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.55;master.connect(AC.destination);
+ padBus=AC.createGain();padBus.gain.value=.5;const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1400;const dl=AC.createDelay(),fb=AC.createGain();dl.delayTime.value=.42;fb.gain.value=.42;
+ padBus.connect(lp);lp.connect(master);lp.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(master);
+ const ch=[[48,55,59,64,67],[45,52,60,64,67],[50,57,60,65,69],[43,50,59,62,67]];let bar=0,next=AC.currentTime+.1;
+ setInterval(()=>{while(next<AC.currentTime+1.5){const c=ch[bar%4];c.slice(0,4).forEach(n=>tone(n,next,3.6,"sine",.09,padBus,1.2));
+  for(let i=0;i<8;i++)tone(c[[1,2,3,4,3,2,3,4][i]]+12,next+i*.4,1.6,"triangle",.07,padBus,.01);bar++;next+=3.2}},400)}
+function birthdayTune(){const q=.55,t0=AC.currentTime+.2;padBus.gain.setTargetAtTime(.15,AC.currentTime,.3);setTimeout(()=>padBus.gain.setTargetAtTime(.5,AC.currentTime,1.5),13800);
+ const n=[[67,.75],[67,.25],[69,1],[67,1],[72,1],[71,2],[67,.75],[67,.25],[69,1],[67,1],[74,1],[72,2],[67,.75],[67,.25],[79,1],[76,1],[72,1],[71,1],[69,1],[77,.75],[77,.25],[76,1],[72,1],[74,1],[72,2]];
+ let t=t0;n.forEach(([m,b])=>{tone(m,t,q*b*1.8,"triangle",.28,master);tone(m+12,t,q*b*1.2,"sine",.12,master);t+=q*b})}
+$("mu").onclick=()=>{muted=!muted;master.gain.setTargetAtTime(muted?0:.55,AC.currentTime,.1);$("mu").textContent=muted?"🔇":"🔊"};
+
+/* ===== कहानी का प्रवाह ===== */
+function go(n){document.querySelectorAll(".scene").forEach((s,i)=>s.classList.toggle("on",i===n))}
+function words(el,txt){el.innerHTML=txt.split(" ").map((w,i)=>`<span class="w" style="animation-delay:${i*.2}s">${w}&nbsp;</span>`).join("")}
+async function type(el,txt,ms=65){el.textContent="";for(const ch of txt){el.textContent+=ch;await sleep(ms)}}
+let skip=null;$("s1").onclick=()=>skip&&skip();const wait=ms=>Promise.race([sleep(ms),new Promise(r=>skip=r)]);
+$("open").onclick=async()=>{initAudio();$("mu").style.display="block";go(1);
+ for(const[l,s]of CONFIG.story){sepT=s;words($("line"),l);await wait(4600)}
+ skip=null;sepT=1.2;$("line").innerHTML="";await sleep(2500);go(2);words($("bd"),fill(CONFIG.birthday));burst();birthdayTune();
+ await sleep(3500);burst();await sleep(5000);burst();await sleep(5500);
+ $("memT").textContent=CONFIG.memT;
+ $("cards").innerHTML=CONFIG.memories.map(m=>`<div class="card"><div class="ph" style="background-image:url('${m[2]}')">♥</div><b>${m[0]}</b><span>${m[1]}</span></div>`).join("");
+ go(3);const d=Math.floor((Date.now()-new Date(CONFIG.since))/864e5);for(let i=0;i<=60;i++){$("days").textContent=Math.round(d*i/60).toLocaleString("hi-IN")+" दिन तुम्हारे साथ";await sleep(25)}};
+$("next3").onclick=async()=>{$("hero").style.backgroundImage=`url('${CONFIG.hero}')`;go(4);heartOn=true;$("sig").textContent="";$("again").classList.add("hide");
+ await sleep(2500);await type($("letter"),fill(CONFIG.letter));$("sig").textContent=CONFIG.from;burst();await sleep(700);$("again").classList.remove("hide")};
+$("again").onclick=()=>location.reload();
+</script>
+</body>
+</html>

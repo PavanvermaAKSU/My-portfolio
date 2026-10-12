@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JanSetu AI - Government Services & FAQ | Rewa District</title>
+  <meta name="description" content="Illustrative citizen guidance for Madhya Pradesh e-District services, Lok Seva Kendra, and municipal utilities in Rewa." />
+  <meta property="og:title" content="JanSetu AI - Services & FAQ" />
+
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Demo Disclaimer Banner -->
+  <div class="demo-banner" role="banner">
+    <div class="demo-banner-content">
+      <span class="demo-badge-pill">DEMO PROTOTYPE</span>
+      <span data-i18n="demoNotice">DEMO PROTOTYPE | Sample Data | Not an Official Government Portal</span>
+    </div>
+    <button class="demo-reset-btn" data-action="reset-data" data-i18n="resetDemoData">Reset Demo Data</button>
+  </div>
+
+  <!-- Role Quick Switcher -->
+  <div class="role-bar">
+    <div class="role-bar-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span data-i18n="switchRole">Switch Role (Demo):</span>
+    </div>
+    <div class="role-nav-links">
+      <a href="citizen.html" class="role-chip" data-role-switch="citizen">
+        <span data-i18n="roleCitizen">Citizen</span>
+      </a>
+      <a href="officer.html" class="role-chip" data-role-switch="officer">
+        <span data-i18n="roleOfficer">Officer</span>
+      </a>
+      <a href="administration.html" class="role-chip" data-role-switch="admin">
+        <span data-i18n="roleAdmin">District Admin</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="JanSetu AI Home">
+        <div class="brand-icon-box">
+          <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="32" height="32" />
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-title" data-i18n="appTitle">जनसेतु AI (JanSetu AI)</span>
+          <span class="brand-subtitle" data-i18n="appSubtitle">रीवा जिला डिजिटल गवर्नेंस एवं समाधान मंच</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link" data-i18n="navHome">Home</a>
+        <a href="citizen.html" class="nav-link" data-i18n="navCitizen">Citizen Portal</a>
+        <a href="officer.html" class="nav-link" data-i18n="navOfficer">Officer Portal</a>
+        <a href="administration.html" class="nav-link" data-i18n="navAdmin">District Administration</a>
+        <a href="services.html" class="nav-link active" data-i18n="navServices">Services & FAQ</a>
+        <a href="tracking.html" class="nav-link" data-i18n="navTracking">Track Complaint</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="lang-toggle-btn" aria-label="Switch Language">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span data-i18n="languageName">English</span>
+        </button>
+        <button class="mobile-nav-toggle" aria-label="Open Navigation Menu" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main-content">
+    <div class="page-container">
+      
+      <!-- Page Title -->
+      <div style="margin-bottom: 2.5rem; text-align: center;">
+        <h1 style="font-size: var(--text-2xl); font-weight: 800; color: var(--color-primary-navy); margin-bottom: 0.5rem;">
+          सरकारी सेवाएं एवं नागरिक मार्गदर्शन (Services & FAQ)
+        </h1>
+        <p style="font-size: var(--text-sm); color: var(--color-text-secondary); max-width: 680px; margin: 0 auto;">
+          रीवा जिले के नागरिकों के लिए लोक सेवा केंद्र, प्रमाण पत्र एवं सामान्य नागरिक प्रक्रियाओं का सांकेतिक मार्गदर्शक विवरण।
+        </p>
+      </div>
+
+      <!-- Important Guidance Notice -->
+      <div style="background: var(--color-light-blue); border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 2.5rem; display: flex; align-items: flex-start; gap: 1rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div style="font-size: var(--text-xs); color: var(--color-primary-navy); line-height: 1.6;">
+          <strong>नागरिक परामर्श सूचना (Civic Guidance Notice):</strong><br />
+          यह अनुभाग केवल सामान्य समझ एवं डेमो मार्गदर्शन हेतु तैयार किया गया है। जनसेतु AI किसी सरकारी नीति या शुल्क का निर्धारण नहीं करता। वास्तविक आवेदन एवं अधिकृत नियमों के लिए कृपया आधिकारिक <strong>mpedistrict.gov.in</strong> अथवा नजदीकी लोक सेवा केंद्र (रीवा समाहरणालय/तहसील) से संपर्क करें।
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.75rem; margin-bottom: 3.5rem;">
+        
+        <!-- Service Card 1: Income Certificate -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="font-size: var(--text-xs); color: var(--color-primary-blue); font-weight: 700; text-transform: uppercase;">
+                राजस्व विभाग / लोक सेवा केंद्र
+              </div>
+              <h3 class="card-title">आय प्रमाण पत्र मार्गदर्शन (Income Certificate)</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              मध्य प्रदेश लोक सेवा गारंटी के तहत छात्रवृत्ति, शुल्क छूट या शासकीय योजनाओं हेतु आय प्रमाण पत्र का सामान्य प्रारूप।
+            </p>
+
+            <div style="font-size: var(--text-xs); margin-bottom: 1rem;">
+              <strong style="color: var(--color-primary-navy); display: block; margin-bottom: 0.35rem;">आवश्यक दस्तावेज (Sample Requirements):</strong>
+              <ul style="list-style: disc; padding-left: 1.25rem; color: var(--color-text-primary); display: flex; flex-direction: column; gap: 0.25rem;">
+                <li>समग्र आईडी (Samagra ID)</li>
+                <li>स्व-घोषणा पत्र (Self-declaration of family income)</li>
+                <li>पहचान पत्र (आधार कार्ड / मतदाता पहचान पत्र)</li>
+                <li>पासपोर्ट साइज फोटो</li>
+              </ul>
+            </div>
+
+            <div style="font-size: var(--text-xs); background: var(--color-surface-muted); padding: 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid var(--color-primary-navy);">
+              <strong>प्रक्रिया:</strong> लोक सेवा केंद्र रीवा या mpedistrict.gov.in पर फॉर्म भरें। सामान्यतः 3 कार्य दिवसों में डिजिटल हस्ताक्षर युक्त प्रमाण पत्र जारी होता है।
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="citizen.html" class="btn btn-sm btn-outline">
+              सहायक से प्रश्न पूछें
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 2: Domicile Certificate -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="font-size: var(--text-xs); color: var(--color-primary-blue); font-weight: 700; text-transform: uppercase;">
+                राजस्व विभाग
+              </div>
+              <h3 class="card-title">मूल निवास प्रमाण पत्र (Domicile Guidance)</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              मध्य प्रदेश में स्थायी निवास की पुष्टि हेतु शैक्षणिक प्रवेश एवं शासकीय परीक्षाओं के लिए आवश्यक प्रमाण पत्र।
+            </p>
+
+            <div style="font-size: var(--text-xs); margin-bottom: 1rem;">
+              <strong style="color: var(--color-primary-navy); display: block; margin-bottom: 0.35rem;">आवश्यक दस्तावेज:</strong>
+              <ul style="list-style: disc; padding-left: 1.25rem; color: var(--color-text-primary); display: flex; flex-direction: column; gap: 0.25rem;">
+                <li>मध्य प्रदेश में निरंतर निवास का प्रमाण</li>
+                <li>समग्र परिवार आईडी एवं आधार कार्ड</li>
+                <li>शैक्षणिक अंकसूची या भूमि रिकॉर्ड (खसरा/खतौनी)</li>
+              </ul>
+            </div>
+
+            <div style="font-size: var(--text-xs); background: var(--color-surface-muted); padding: 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid var(--color-primary-navy);">
+              <strong>प्रक्रिया:</strong> तहसीलदार द्वारा सत्यापन उपरांत ऑनलाइन डिजिटल सर्टिफिकेट डाउनलोड किया जा सकता है।
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="citizen.html" class="btn btn-sm btn-outline">
+              सहायक से प्रश्न पूछें
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 3: Municipal Water Connection -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="font-size: var(--text-xs); color: var(--color-primary-blue); font-weight: 700; text-transform: uppercase;">
+                रीवा नगर निगम (जल विभाग)
+              </div>
+              <h3 class="card-title">नल जल संयोजन व पाइपलाइन शिकायत</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              रीवा शहरी क्षेत्र में घरेलू नल कनेक्शन आवेदन अथवा लीकेज/गंदे पानी की शिकायत निवारण प्रक्रिया।
+            </p>
+
+            <div style="font-size: var(--text-xs); margin-bottom: 1rem;">
+              <strong style="color: var(--color-primary-navy); display: block; margin-bottom: 0.35rem;">प्रक्रिया एवं आवश्यकताएं:</strong>
+              <ul style="list-style: disc; padding-left: 1.25rem; color: var(--color-text-primary); display: flex; flex-direction: column; gap: 0.25rem;">
+                <li>भवन स्वामित्व या संपत्ति कर की रसीद</li>
+                <li>वार्ड क्रमांक एवं नजदीकी पाइपलाइन विवरण</li>
+                <li>लीकेज या खराबी की स्थिति में जनसेतु AI पर सीधे शिकायत दर्ज करें</li>
+              </ul>
+            </div>
+
+            <div style="font-size: var(--text-xs); background: var(--color-surface-muted); padding: 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid var(--color-primary-navy);">
+              <strong>हेल्पलाइन:</strong> रीवा नगर निगम जल प्रकोष्ठ नियंत्रण कक्ष: 1800-233-1002
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="citizen.html#wizard" class="btn btn-sm btn-primary">
+              सीधे शिकायत दर्ज करें
+            </a>
+          </div>
+        </div>
+
+        <!-- Service Card 4: Roads & Streetlights -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="font-size: var(--text-xs); color: var(--color-primary-blue); font-weight: 700; text-transform: uppercase;">
+                PWD एवं विद्युत संधारण सेल
+              </div>
+              <h3 class="card-title">सड़क मरम्मत एवं बंद स्ट्रीटलाइट</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              मोहल्ले की सड़कों पर गड्ढे, टूटे ढक्कन या अंधेरे की स्थिति में त्वरित सुधार हेतु शिकायत प्रक्रिया।
+            </p>
+
+            <div style="font-size: var(--text-xs); margin-bottom: 1rem;">
+              <strong style="color: var(--color-primary-navy); display: block; margin-bottom: 0.35rem;">सुझाव:</strong>
+              <ul style="list-style: disc; padding-left: 1.25rem; color: var(--color-text-primary); display: flex; flex-direction: column; gap: 0.25rem;">
+                <li>खंभा संख्या (Pole No.) अथवा लैंडमार्क का स्पष्ट उल्लेख करें</li>
+                <li>संभव हो तो एक स्पष्ट फोटो संलग्न करें</li>
+                <li>जनसेतु पोर्टल पर दर्ज करने के उपरांत ट्रैकिंग आईडी सुरक्षित रखें</li>
+              </ul>
+            </div>
+
+            <div style="font-size: var(--text-xs); background: var(--color-surface-muted); padding: 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid var(--color-primary-navy);">
+              <strong>समय-सीमा:</strong> सामान्य स्ट्रीटलाइट सुधार 48 घंटे के भीतर लक्षित रहता है।
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="citizen.html#wizard" class="btn btn-sm btn-primary">
+              सीधे शिकायत दर्ज करें
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Frequently Asked Questions (FAQ) Accordion / Cards -->
+      <section style="max-width: 800px; margin: 0 auto 3.5rem;">
+        <h2 style="font-size: var(--text-xl); font-weight: 800; color: var(--color-primary-navy); margin-bottom: 1.5rem; text-align: center;">
+          अक्सर पूछे जाने वाले प्रश्न (Frequently Asked Questions)
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="card" style="padding: 1.25rem;">
+            <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.35rem;">
+              प्र. जनसेतु AI में शिकायत दर्ज करने के बाद क्या होता है?
+            </h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5;">
+              उत्तर: जैसे ही आप शिकायत दर्ज करते हैं, प्रणाली आपको एक विशिष्ट ट्रैकिंग आईडी (उदा. JS-REWA-2026-1001) प्रदान करती है। यह शिकायत अधिकारी पोर्टल के संबंधित विभागीय डेस्क पर प्रदर्शित हो जाती है, जहाँ से अधिकारी इसे जांच दल को आवंटित कर सकते हैं।
+            </p>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.35rem;">
+              प्र. क्या इसके लिए जीपीएस या व्यक्तिगत पहचान पत्र अनिवार्य है?
+            </h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5;">
+              उत्तर: नहीं। जनसेतु AI में जीपीएस केवल वैकल्पिक सुविधा है; नागरिक रीवा के किसी भी इलाके या मोहल्ले का नाम सीधे ड्रॉपडाउन से चुन सकते हैं। साथ ही यह प्रोटोटाइप किसी भी नागरिक से आधार नंबर या संवेदनशील गोपनीय जानकारी नहीं मांगता।
+            </p>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.35rem;">
+              प्र. क्या यह आधिकारिक मध्य प्रदेश सीएम हेल्पलाइन से जुड़ा हुआ है?
+            </h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5;">
+              उत्तर: नहीं। जनसेतु AI टीम विंध्य इनोवेटर्स (एकेएस यूनिवर्सिटी) द्वारा iComputex TechFest 2026 हैकाथॉन हेतु तैयार किया गया एक तकनीकी शोध एवं डिजिटल गवर्नेंस प्रोटोटाइप है। इसका उद्देश्य वर्कफ़्लो स्वचालन और पारदर्शी ट्रैकिंग का व्यावहारिक प्रदर्शन करना है।
+            </p>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.35rem;">
+              प्र. यदि कोई प्रश्न इस डेमो में उपलब्ध न हो तो क्या करें?
+            </h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5;">
+              उत्तर: "वर्तमान डेमो में इस प्रश्न की पुष्टि हेतु सत्यापित जानकारी उपलब्ध नहीं है। कृपया संबंधित आधिकारिक शासकीय सेवा केंद्र अथवा mpedistrict.gov.in से परामर्श लें।"
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+            <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="28" height="28" />
+            <span style="font-size:var(--text-lg); font-weight:700; color:#FFF;">JanSetu AI</span>
+          </div>
+          <p data-i18n="tagline">नागरिक की समस्या से समाधान तक: डिजिटल, समझदारीपूर्ण और पारदर्शी।</p>
+          <div style="margin-top:1rem; font-size:var(--text-xs); color:#64748B;">
+            Rewa District Citizen Guidance Knowledge Base
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Demo Portals</div>
+          <div class="footer-links">
+            <a href="citizen.html" data-i18n="navCitizen">Citizen Portal</a>
+            <a href="officer.html" data-i18n="navOfficer">Officer Portal</a>
+            <a href="administration.html" data-i18n="navAdmin">District Administration</a>
+            <a href="tracking.html" data-i18n="navTracking">Track Complaint</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Documentation</div>
+          <div class="footer-links">
+            <a href="services.html" data-i18n="navServices">Services Guidance</a>
+            <a href="README.md" target="_blank">Project README</a>
+            <a href="docs/demo-script.md" target="_blank">Hackathon Demo Script</a>
+            <a href="docs/prototype-limitations.md" target="_blank">Prototype Boundaries</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-academic-card">
+            <strong>Team Vindhya Innovators</strong>
+            <div>AKS University, Satna / Rewa Region</div>
+            <div style="margin-top:0.35rem; color:#94A3B8;">
+              iComputex TechFest 2026<br />
+              Smart Rewa 2030 Hackathon
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 JanSetu AI · Academic Hackathon Prototype · Not an official government website.
+        </div>
+        <div style="display:flex; gap:1rem;">
+          <button class="demo-reset-btn" data-action="reset-data">Reset Demo Data</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/complaint-service.js"></script>
+  <script src="js/localization.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script src="js/navigation.js"></script>
+</body>
+</html>

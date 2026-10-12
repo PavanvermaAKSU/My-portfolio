@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JanSetu AI - District Administration Dashboard | Rewa District</title>
+  <meta name="description" content="District Administration Oversight & Spatial Analytics for Rewa District. Team Vindhya Innovators, AKS University." />
+  <meta property="og:title" content="JanSetu AI - District Administration" />
+
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/administration.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Demo Disclaimer Banner -->
+  <div class="demo-banner" role="banner">
+    <div class="demo-banner-content">
+      <span class="demo-badge-pill">ADMIN DEMO DASHBOARD</span>
+      <span data-i18n="demoNotice">DEMO PROTOTYPE | Sample Data | Not an Official Government Portal</span>
+    </div>
+    <button class="demo-reset-btn" data-action="reset-data" data-i18n="resetDemoData">Reset Demo Data</button>
+  </div>
+
+  <!-- Role Quick Switcher -->
+  <div class="role-bar">
+    <div class="role-bar-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span data-i18n="switchRole">Switch Role (Demo):</span>
+    </div>
+    <div class="role-nav-links">
+      <a href="citizen.html" class="role-chip" data-role-switch="citizen">
+        <span data-i18n="roleCitizen">Citizen</span>
+      </a>
+      <a href="officer.html" class="role-chip" data-role-switch="officer">
+        <span data-i18n="roleOfficer">Officer</span>
+      </a>
+      <a href="administration.html" class="role-chip active" data-role-switch="admin">
+        <span data-i18n="roleAdmin">District Admin</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="JanSetu AI Home">
+        <div class="brand-icon-box">
+          <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="32" height="32" />
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-title">JanSetu Analytics (जिला प्रशासन)</span>
+          <span class="brand-subtitle">रीवा जिला मॉनिटरिंग एवं विश्लेषिकी सेल</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link" data-i18n="navHome">Home</a>
+        <a href="citizen.html" class="nav-link" data-i18n="navCitizen">Citizen Portal</a>
+        <a href="officer.html" class="nav-link" data-i18n="navOfficer">Officer Portal</a>
+        <a href="administration.html" class="nav-link active" data-i18n="navAdmin">District Administration</a>
+        <a href="tracking.html" class="nav-link" data-i18n="navTracking">Track Complaint</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="lang-toggle-btn" aria-label="Switch Language">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span data-i18n="languageName">English</span>
+        </button>
+        <button class="mobile-nav-toggle" aria-label="Open Navigation Menu" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Layout -->
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar sidebar">
+      <div style="padding-bottom:1rem; border-bottom:1px solid var(--color-border); margin-bottom:1.5rem;">
+        <div style="font-size:var(--text-xs); font-weight:700; color:var(--color-primary-blue); text-transform:uppercase;">District Oversight</div>
+        <div style="font-size:var(--text-base); font-weight:800; color:var(--color-primary-navy);">रीवा समाहरणालय (Rewa Collectorate)</div>
+        <div style="font-size:0.75rem; color:var(--color-text-secondary);">Executive Governance View</div>
+      </div>
+
+      <nav class="sidebar-menu sidebar-nav" aria-label="Administration Navigation">
+        <a href="#overview-section" class="sidebar-link active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>कार्यकारी सारांश (Overview)</span>
+        </a>
+        <a href="#map-section" class="sidebar-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          <span>शिकायत विश्लेषिकी व हीटमैप (Heatmap & Analytics)</span>
+        </a>
+        <a href="#analytics-section" class="sidebar-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>श्रेणी व इलाका विश्लेषिकी</span>
+        </a>
+        <a href="officer.html" class="sidebar-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span data-i18n="navOfficer">अधिकारी डेस्क खोलें</span>
+        </a>
+      </nav>
+
+      <div style="margin-top:auto; font-size:var(--text-xs); color:var(--color-text-muted); padding-top:1.5rem; border-top:1px solid var(--color-border);">
+        <strong>Prototype Disclosure:</strong> All metrics dynamically aggregated from demo records.
+      </div>
+    </aside>
+
+    <!-- Main Admin Dashboard -->
+    <main id="main-content" class="admin-main">
+      <!-- Title Header -->
+      <div class="dashboard-header" id="overview-section">
+        <div>
+          <h1 class="dashboard-title" data-i18n="adminTitle">रीवा जिला प्रशासन डैशबोर्ड</h1>
+          <p class="dashboard-subtitle" data-i18n="adminSub">जिला कलेक्टर एवं विभागीय निगरानी विश्लेषण (डेमो डेटा)</p>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn btn-sm btn-outline demo-reset-btn" data-action="reset-data">
+            डेटा रीसेट (Reset Dataset)
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Overview Cards -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-title" data-i18n="statTotal">कुल डेमो शिकायतें</span>
+          <span class="metric-value" id="admin-total-complaints">0</span>
+          <span class="metric-caption">Rewa District Gross Volume</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-title" style="color:var(--color-warning);" data-i18n="statPending">समीक्षा लंबित</span>
+          <span class="metric-value" id="admin-pending-complaints" style="color:var(--color-warning);">0</span>
+          <span class="metric-caption">Awaiting Desk Assignment</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-title" style="color:var(--color-primary-blue);" data-i18n="statInProgress">कार्यवाही जारी</span>
+          <span class="metric-value" id="admin-inprogress-complaints" style="color:var(--color-primary-blue);">0</span>
+          <span class="metric-caption">Field Work In Progress</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-title" style="color:var(--color-success);" data-i18n="statResolved">सफलतापूर्वक निस्तारित</span>
+          <span class="metric-value" id="admin-resolved-complaints" style="color:var(--color-success);">0</span>
+          <span class="metric-caption">Officially Resolved Cases</span>
+        </div>
+      </section>
+
+      <!-- Complaint Analytics -> Rewa District Complaint Heatmap -->
+      <section class="map-section" id="map-section">
+        <!-- Section Header -->
+        <div class="map-header">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.25rem;">
+              <h2 style="font-size:var(--text-xl); font-weight:800; color:var(--color-primary-navy); margin:0;">
+                Rewa District Complaint Heatmap
+              </h2>
+              <span class="demo-badge-pill" style="background:#B45309; color:#FFF; font-size:0.65rem; padding:0.15rem 0.5rem; border-radius:var(--radius-sm); font-weight:700;">DEMO DATA</span>
+            </div>
+            <p style="font-size:var(--text-xs); color:var(--color-text-secondary); margin:0;">
+              Explore complaint concentration across Rewa district.
+            </p>
+            <div style="font-size:0.7rem; color:var(--color-text-muted); font-style:italic; margin-top:0.2rem;">
+              * Illustrative complaint hotspots, not geospatially verified.
+            </div>
+          </div>
+
+          <!-- Category Filter -->
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <label for="map-cat-filter" style="font-size:var(--text-xs); font-weight:600; color:var(--color-text-secondary);">Category Filter:</label>
+            <select id="map-cat-filter" class="filter-select">
+              <option value="all">All Categories (सभी श्रेणियां)</option>
+              <option value="water">Water Supply (जल आपूर्ति)</option>
+              <option value="road">Roads & Potholes (सड़क व गड्ढे)</option>
+              <option value="drainage">Drainage & Sewage (नाली व जल निकासी)</option>
+              <option value="sanitation">Garbage & Sanitation (कचरा व स्वच्छता)</option>
+              <option value="streetlight">Streetlights (स्ट्रीटलाइट)</option>
+              <option value="electricity">Electricity Supply (विद्युत समस्या)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Heatmap Summary Metric Cards -->
+        <div class="heatmap-summary-grid">
+          <div class="heatmap-stat-card">
+            <span class="heatmap-stat-label">Total Demo Complaints</span>
+            <span class="heatmap-stat-value" id="heatmap-stat-total">17</span>
+          </div>
+          <div class="heatmap-stat-card">
+            <span class="heatmap-stat-label" style="color:var(--color-warning);">Pending Demo Complaints</span>
+            <span class="heatmap-stat-value" id="heatmap-stat-pending" style="color:var(--color-warning);">7</span>
+          </div>
+          <div class="heatmap-stat-card">
+            <span class="heatmap-stat-label" style="color:var(--color-success);">Resolved Demo Complaints</span>
+            <span class="heatmap-stat-value" id="heatmap-stat-resolved" style="color:var(--color-success);">4</span>
+          </div>
+          <div class="heatmap-stat-card">
+            <span class="heatmap-stat-label" style="color:var(--color-danger);">Highest-Complaint Area</span>
+            <span class="heatmap-stat-value" id="heatmap-stat-highest" style="color:var(--color-danger); font-size:var(--text-sm); line-height:1.2;">Huzur (5)</span>
+          </div>
+        </div>
+
+        <div class="map-container-grid">
+          <!-- Interactive SVG Heatmap Container -->
+          <div class="schematic-map-wrap" aria-label="Interactive Heatmap of Rewa District Tehsils">
+            <svg viewBox="0 0 760 480" width="100%" height="100%" style="position:absolute; inset:0;" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E2E8F0" stroke-width="0.5"/>
+                </pattern>
+                <!-- Radial glow filters for hotspot pins -->
+                <radialGradient id="heatGlowDarkRed" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#991B1B" stop-opacity="0.8" />
+                  <stop offset="60%" stop-color="#DC2626" stop-opacity="0.4" />
+                  <stop offset="100%" stop-color="#DC2626" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+
+              <!-- 11 Contiguous Tehsils of Rewa District matching official boundaries -->
+              <!-- 1. Jawa (North-West) -->
+              <path id="poly-jawa" class="tehsil-polygon heat-low" d="M 70 120 L 170 80 L 230 115 L 210 185 L 140 205 L 80 170 Z" />
+              <!-- 2. Teonthar (North / Northeast) -->
+              <path id="poly-teonthar" class="tehsil-polygon heat-low" d="M 230 115 L 340 60 L 440 85 L 420 165 L 330 155 L 210 185 Z" />
+              <!-- 3. Semaria (West) -->
+              <path id="poly-semaria" class="tehsil-polygon heat-low" d="M 60 215 L 140 205 L 210 185 L 220 270 L 170 330 L 90 310 L 50 255 Z" />
+              <!-- 4. Sirmour (North-Central) -->
+              <path id="poly-sirmour" class="tehsil-polygon heat-high" d="M 210 185 L 330 155 L 360 225 L 285 265 L 220 270 Z" />
+              <!-- 5. Mangawan (Central-North) -->
+              <path id="poly-mangawan" class="tehsil-polygon heat-low" d="M 330 155 L 420 165 L 470 215 L 430 275 L 360 225 Z" />
+              <!-- 6. Naigarhi (Northeast) -->
+              <path id="poly-naigarhi" class="tehsil-polygon heat-low" d="M 420 165 L 530 145 L 580 215 L 500 235 L 470 215 Z" />
+              <!-- 7. Hanumana (Far East) -->
+              <path id="poly-hanumana" class="tehsil-polygon heat-low" d="M 580 215 L 690 175 L 740 235 L 700 320 L 600 310 L 580 245 Z" />
+              <!-- 8. Mauganj (East-Central) -->
+              <path id="poly-mauganj" class="tehsil-polygon heat-high" d="M 500 235 L 580 215 L 580 245 L 600 310 L 530 350 L 470 305 Z" />
+              <!-- 9. Huzur (Central / Rewa Urban Center) -->
+              <path id="poly-huzur" class="tehsil-polygon heat-very-high" d="M 220 270 L 285 265 L 360 225 L 370 285 L 350 370 L 260 380 L 170 330 Z" />
+              <!-- 10. Raipur-Karchuliyan (Central-East) -->
+              <path id="poly-raipur" class="tehsil-polygon heat-low" d="M 360 225 L 430 275 L 470 305 L 440 375 L 370 370 L 370 285 Z" />
+              <!-- 11. Gurh (South / Southeast) -->
+              <path id="poly-gurh" class="tehsil-polygon heat-low" d="M 260 380 L 350 370 L 370 370 L 440 375 L 420 445 L 320 455 L 240 425 Z" />
+
+              <!-- River Bichhiya flow line (decorative landmark) -->
+              <path d="M 210 280 Q 280 295, 340 305 T 410 310" stroke="#38BDF8" stroke-width="2" fill="none" opacity="0.6" stroke-dasharray="6 3" />
+
+              <!-- Clear Tehsil Labels and Dynamic Live Count Badges -->
+              <!-- Jawa -->
+              <text x="155" y="140" class="tehsil-label">Jawa</text>
+              <text x="155" y="153" class="tehsil-sublabel">जवा</text>
+              <text id="badge-jawa" x="155" y="167" class="tehsil-count-badge">1 req</text>
+
+              <!-- Teonthar -->
+              <text x="325" y="115" class="tehsil-label">Teonthar</text>
+              <text x="325" y="128" class="tehsil-sublabel">त्यौंथर</text>
+              <text id="badge-teonthar" x="325" y="142" class="tehsil-count-badge">1 req</text>
+
+              <!-- Semaria -->
+              <text x="135" y="245" class="tehsil-label">Semaria</text>
+              <text x="135" y="258" class="tehsil-sublabel">सेमरिया</text>
+              <text id="badge-semaria" x="135" y="272" class="tehsil-count-badge">1 req</text>
+
+              <!-- Sirmour -->
+              <text x="280" y="210" class="tehsil-label">Sirmour</text>
+              <text x="280" y="223" class="tehsil-sublabel">सिरमौर</text>
+              <text id="badge-sirmour" x="280" y="237" class="tehsil-count-badge">2 req</text>
+
+              <!-- Mangawan -->
+              <text x="395" y="195" class="tehsil-label">Mangawan</text>
+              <text x="395" y="208" class="tehsil-sublabel">मनगवां</text>
+              <text id="badge-mangawan" x="395" y="222" class="tehsil-count-badge">1 req</text>
+
+              <!-- Naigarhi -->
+              <text x="495" y="180" class="tehsil-label">Naigarhi</text>
+              <text x="495" y="193" class="tehsil-sublabel">नईगढ़ी</text>
+              <text id="badge-naigarhi" x="495" y="207" class="tehsil-count-badge">1 req</text>
+
+              <!-- Hanumana -->
+              <text x="645" y="235" class="tehsil-label">Hanumana</text>
+              <text x="645" y="248" class="tehsil-sublabel">हनुमना</text>
+              <text id="badge-hanumana" x="645" y="262" class="tehsil-count-badge">1 req</text>
+
+              <!-- Mauganj -->
+              <text x="535" y="275" class="tehsil-label">Mauganj</text>
+              <text x="535" y="288" class="tehsil-sublabel">मऊगंज</text>
+              <text id="badge-mauganj" x="535" y="302" class="tehsil-count-badge">2 req</text>
+
+              <!-- Huzur (Rewa Urban) -->
+              <text x="275" y="305" class="tehsil-label" style="font-size:13px; fill:#FFFFFF;">Huzur (Rewa Urban)</text>
+              <text x="275" y="320" class="tehsil-sublabel" style="fill:#FEF08A; font-weight:700;">हुजूर (रीवा नगर निगम)</text>
+              <text id="badge-huzur" x="275" y="336" class="tehsil-count-badge" style="fill:#FFFFFF; font-size:11px;">5 req</text>
+
+              <!-- Raipur-Karchuliyan -->
+              <text x="405" y="300" class="tehsil-label">Raipur-K.</text>
+              <text x="405" y="313" class="tehsil-sublabel">रायपुर क.</text>
+              <text id="badge-raipur" x="405" y="327" class="tehsil-count-badge">1 req</text>
+
+              <!-- Gurh -->
+              <text x="335" y="400" class="tehsil-label">Gurh</text>
+              <text x="335" y="413" class="tehsil-sublabel">गुढ़</text>
+              <text id="badge-gurh" x="335" y="427" class="tehsil-count-badge">1 req</text>
+            </svg>
+
+            <!-- Dynamic Hotspot Pins Layer -->
+            <div id="schematic-pins-container" style="position:absolute; inset:0;"></div>
+          </div>
+
+          <!-- Hotspot Selection Sidebar Detail -->
+          <div class="map-sidebar-info">
+            <div style="font-size:var(--text-xs); font-weight:700; color:var(--color-primary-navy); text-transform:uppercase; margin-bottom:0.75rem; border-bottom:1px solid var(--color-border); padding-bottom:0.35rem;">
+              Selected Area Details (तहसील विवरण)
+            </div>
+            
+            <div id="map-detail-card">
+              <div style="color:var(--color-text-secondary); font-size:var(--text-xs);">
+                Click on any tehsil region or hotspot pin to inspect grievance concentration.
+              </div>
+            </div>
+
+            <!-- Heatmap Concentration Legend -->
+            <div class="map-legend">
+              <div style="font-size:0.75rem; font-weight:700; color:var(--color-primary-navy); margin-bottom:0.35rem;">
+                Complaint Concentration (शिकायत सांद्रता)
+              </div>
+              <div class="legend-item">
+                <span class="legend-chip" style="background:#991B1B;"></span>
+                <span><strong>Very High</strong> (अत्यधिक सांद्रता - Dark Red)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-chip" style="background:#DC2626;"></span>
+                <span><strong>High</strong> (उच्च सांद्रता - Red)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-chip" style="background:#EA580C;"></span>
+                <span><strong>Medium</strong> (मध्यम सांद्रता - Orange)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-chip" style="background:#EAB308;"></span>
+                <span><strong>Low</strong> (कम सांद्रता - Yellow)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-chip" style="background:#FEF9C3; border-color:#CBD5E1;"></span>
+                <span><strong>Very Low</strong> (अत्यंत कम - Light Yellow / Neutral)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--color-text-muted); text-align:right;">
+          * Demonstration only. Complaint counts and hotspot distribution are sample data, not official government records.
+        </div>
+      </section>
+
+      <!-- Analytics Section -->
+      <section class="analytics-grid" id="analytics-section">
+        <!-- Category Distribution Chart Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="categoryAnalyticsTitle">श्रेणी अनुसार शिकायत संख्या</h3>
+              <p class="card-subtitle">Volume breakdown by public utility category</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart-category-bars"></div>
+          </div>
+        </div>
+
+        <!-- Locality Breakdown Chart Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="localityAnalyticsTitle">सर्वाधिक प्रभावित इलाके</h3>
+              <p class="card-subtitle">Localities with highest registered grievance count</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart-locality-bars"></div>
+          </div>
+        </div>
+
+        <!-- Department Workload Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="workloadTitle">विभागीय कार्यभार वितरण</h3>
+              <p class="card-subtitle">Active task distribution across government bodies</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart-workload-bars"></div>
+          </div>
+        </div>
+
+        <!-- SLA Compliance Metric Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" data-i18n="slaTitle">समय-सीमा (SLA) अनुपालन</h3>
+              <p class="card-subtitle" data-i18n="slaTarget">7-दिवसीय निस्तारण लक्ष्य (सांकेतिक)</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="sla-bar-container">
+              <div class="sla-bar-label">
+                <span>Overall Resolution Rate</span>
+                <span id="sla-resolution-rate">0%</span>
+              </div>
+              <div class="sla-progress-track">
+                <div id="sla-progress-fill" class="sla-progress-fill" style="width:0%; background:var(--color-success);"></div>
+              </div>
+            </div>
+
+            <div style="font-size:var(--text-xs); color:var(--color-text-secondary); line-height:1.6; margin-top:1rem; background:var(--color-surface-muted); padding:1rem; border-radius:var(--radius-md);">
+              <strong>SLA Methodology Disclosure:</strong><br />
+              Any SLA compliance percentages shown here are simulated prototype calculations based strictly on stored demo records. They do not constitute official departmental commitments.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/complaint-service.js"></script>
+  <script src="js/localization.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script src="js/navigation.js"></script>
+  <script>
+    // Update admin overview KPI values
+    function updateAdminKpis() {
+      const stats = window.JanSetuAnalytics.getSummaryStats();
+      const totalEl = document.getElementById('admin-total-complaints');
+      const pendEl = document.getElementById('admin-pending-complaints');
+      const inProgEl = document.getElementById('admin-inprogress-complaints');
+      const resEl = document.getElementById('admin-resolved-complaints');
+      const rateEl = document.getElementById('sla-resolution-rate');
+      const barEl = document.getElementById('sla-progress-fill');
+
+      if (totalEl) totalEl.textContent = stats.total;
+      if (pendEl) pendEl.textContent = stats.pending;
+      if (inProgEl) inProgEl.textContent = stats.inProgress;
+      if (resEl) resEl.textContent = stats.resolved;
+      if (rateEl) rateEl.textContent = `${stats.complianceRate}%`;
+      if (barEl) barEl.style.width = `${stats.complianceRate}%`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAdminKpis();
+      window.addEventListener('jansetu:data-updated', updateAdminKpis);
+    });
+  </script>
+</body>
+</html>

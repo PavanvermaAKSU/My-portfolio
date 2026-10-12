@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JanSetu AI - Track Complaint | Rewa District</title>
+  <meta name="description" content="Track live demonstration grievance status, officer reviews, and departmental action timeline in Rewa District." />
+  <meta property="og:title" content="JanSetu AI - Track Complaint" />
+
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Demo Disclaimer Banner -->
+  <div class="demo-banner" role="banner">
+    <div class="demo-banner-content">
+      <span class="demo-badge-pill">DEMO PROTOTYPE</span>
+      <span data-i18n="demoNotice">DEMO PROTOTYPE | Sample Data | Not an Official Government Portal</span>
+    </div>
+    <button class="demo-reset-btn" data-action="reset-data" data-i18n="resetDemoData">Reset Demo Data</button>
+  </div>
+
+  <!-- Role Quick Switcher -->
+  <div class="role-bar">
+    <div class="role-bar-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span data-i18n="switchRole">Switch Role (Demo):</span>
+    </div>
+    <div class="role-nav-links">
+      <a href="citizen.html" class="role-chip" data-role-switch="citizen">
+        <span data-i18n="roleCitizen">Citizen</span>
+      </a>
+      <a href="officer.html" class="role-chip" data-role-switch="officer">
+        <span data-i18n="roleOfficer">Officer</span>
+      </a>
+      <a href="administration.html" class="role-chip" data-role-switch="admin">
+        <span data-i18n="roleAdmin">District Admin</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-link" aria-label="JanSetu AI Home">
+        <div class="brand-icon-box">
+          <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="32" height="32" />
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-title" data-i18n="appTitle">जनसेतु AI (JanSetu AI)</span>
+          <span class="brand-subtitle" data-i18n="appSubtitle">रीवा जिला डिजिटल गवर्नेंस एवं समाधान मंच</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link" data-i18n="navHome">Home</a>
+        <a href="citizen.html" class="nav-link" data-i18n="navCitizen">Citizen Portal</a>
+        <a href="officer.html" class="nav-link" data-i18n="navOfficer">Officer Portal</a>
+        <a href="administration.html" class="nav-link" data-i18n="navAdmin">District Administration</a>
+        <a href="services.html" class="nav-link" data-i18n="navServices">Services & FAQ</a>
+        <a href="tracking.html" class="nav-link active" data-i18n="navTracking">Track Complaint</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="lang-toggle-btn" aria-label="Switch Language">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span data-i18n="languageName">English</span>
+        </button>
+        <button class="mobile-nav-toggle" aria-label="Open Navigation Menu" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main-content">
+    <div class="page-container" style="max-width: 900px;">
+      
+      <!-- Search Card -->
+      <section class="card" style="margin-bottom: 2.5rem; padding: 2rem;">
+        <h1 style="font-size: var(--text-2xl); font-weight: 800; color: var(--color-primary-navy); margin-bottom: 0.35rem;" data-i18n="trackPageTitle">
+          डेमो शिकायत की स्थिति जांचें
+        </h1>
+        <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: 1.5rem;" data-i18n="trackPageSub">
+          अपनी ट्रैकिंग आईडी दर्ज करें और अधिकारी की समीक्षा, विभागीय कार्यवाही व समय-सीमा देखें।
+        </p>
+
+        <form id="tracking-search-form" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <input 
+            type="text" 
+            id="tracking-id-input" 
+            class="form-control" 
+            style="flex: 1; min-width: 260px; font-family: var(--font-mono); font-size: var(--text-base);" 
+            data-i18n-placeholder="trackInputPlaceholder" 
+            placeholder="ट्रैकिंग आईडी दर्ज करें (उदा. JS-REWA-2026-1001)..." 
+            required 
+            aria-label="Tracking ID"
+          />
+          <button type="submit" class="btn btn-primary" data-i18n="trackSearchBtn">
+            स्थिति देखें (Track Request)
+          </button>
+        </form>
+
+        <!-- Sample IDs shortcuts -->
+        <div style="font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <span>Sample Demo IDs:</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('tracking-id-input').value='JS-REWA-2026-1001'; JanSetuTracking.lookupAndRender('JS-REWA-2026-1001');">
+            JS-REWA-2026-1001 (Water)
+          </button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('tracking-id-input').value='JS-REWA-2026-1002'; JanSetuTracking.lookupAndRender('JS-REWA-2026-1002');">
+            JS-REWA-2026-1002 (Road)
+          </button>
+          <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('tracking-id-input').value='JS-REWA-2026-1003'; JanSetuTracking.lookupAndRender('JS-REWA-2026-1003');">
+            JS-REWA-2026-1003 (Resolved)
+          </button>
+        </div>
+
+        <div id="tracking-error" class="form-error" style="margin-top: 1rem; font-size: var(--text-sm); display: none;"></div>
+      </section>
+
+      <!-- Tracking Results Card -->
+      <section id="tracking-result" class="card" style="display: none; margin-bottom: 3rem;">
+        <div class="card-header">
+          <div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-secondary); text-transform: uppercase; font-weight: 600;">
+              Demonstration Tracking Record
+            </div>
+            <div id="res-tracking-id" style="font-family: var(--font-mono); font-size: var(--text-xl); font-weight: 800; color: var(--color-primary-navy);">
+              JS-REWA-2026-1001
+            </div>
+          </div>
+          <div>
+            <span id="res-status-badge" class="status-indicator status-submitted">Submitted</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Overview Details Grid -->
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;" class="tracking-details-grid">
+            <div>
+              <div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 0.35rem;">
+                शिकायत का विवरण (Grievance Description)
+              </div>
+              <p id="res-description" style="font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-primary); margin-bottom: 1.25rem;">
+                —
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: var(--text-xs); color: var(--color-text-secondary);">
+                <div><strong>श्रेणी (Category):</strong> <span id="res-category" style="color:var(--color-text-primary); font-weight:600;">—</span></div>
+                <div><strong>इलाका (Locality):</strong> <span id="res-locality" style="color:var(--color-text-primary); font-weight:600;">—</span></div>
+                <div><span data-i18n="submissionTimeLabel">Submitted On:</span> <span id="res-submitted-time" style="color:var(--color-text-primary);">—</span></div>
+                <div><span data-i18n="lastUpdateLabel">Last Updated:</span> <span id="res-updated-time" style="color:var(--color-text-primary);">—</span></div>
+              </div>
+            </div>
+
+            <!-- Department Assignment Card -->
+            <div style="background: var(--color-surface-muted); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); font-size: var(--text-xs); display:flex; flex-direction:column; gap:0.75rem;">
+              <div>
+                <div style="font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.2rem;" data-i18n="assignedDeptLabel">
+                  आवंटित विभाग:
+                </div>
+                <div id="res-assigned-dept" style="color: var(--color-primary-blue); font-weight: 600;">
+                  —
+                </div>
+              </div>
+
+              <div>
+                <div style="font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.2rem;" data-i18n="assignedOfficerLabel">
+                  जिम्मेदार अधिकारी / पद:
+                </div>
+                <div id="res-assigned-officer" style="color: var(--color-text-primary);">
+                  —
+                </div>
+              </div>
+
+              <div style="margin-top: auto; padding-top: 0.5rem; border-top: 1px dashed var(--color-border-strong);">
+                <a href="officer.html" class="btn btn-sm btn-outline" style="width: 100%;">
+                  अधिकारी डेस्क में अपडेट करें
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Latest Remark Banner -->
+          <div style="background: #EFF6FF; border-left: 4px solid var(--color-primary-blue); padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin-bottom: 2.5rem;">
+            <div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-primary-navy); margin-bottom: 0.25rem;" data-i18n="latestRemarkLabel">
+              अधिकारी की नवीनतम टिप्पणी:
+            </div>
+            <div id="res-latest-remark" style="font-size: var(--text-sm); color: var(--color-text-primary); line-height: 1.5;">
+              No update has been recorded yet.
+            </div>
+          </div>
+
+          <!-- Timeline Component -->
+          <div>
+            <h2 style="font-size: var(--text-lg); font-weight: 800; color: var(--color-primary-navy); margin-bottom: 1.5rem;" data-i18n="timelineTitle">
+              पारदर्शी कार्यवाही समय-सीमा
+            </h2>
+            <div id="res-timeline-container"></div>
+          </div>
+
+        </div>
+
+        <div class="card-footer" style="justify-content: space-between;">
+          <a href="citizen.html" class="btn btn-sm btn-outline">
+            ← नागरिक पोर्टल पर लौटें
+          </a>
+          <button type="button" class="btn btn-sm btn-primary" onclick="window.print()">
+            प्रिंट / रसीद सहेजें (Print Summary)
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+            <img src="assets/images/logo.svg" alt="JanSetu AI Logo" width="28" height="28" />
+            <span style="font-size:var(--text-lg); font-weight:700; color:#FFF;">JanSetu AI</span>
+          </div>
+          <p data-i18n="tagline">नागरिक की समस्या से समाधान तक: डिजिटल, समझदारीपूर्ण और पारदर्शी।</p>
+          <div style="margin-top:1rem; font-size:var(--text-xs); color:#64748B;">
+            Rewa District Grievance Tracking Engine
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Demo Portals</div>
+          <div class="footer-links">
+            <a href="citizen.html" data-i18n="navCitizen">Citizen Portal</a>
+            <a href="officer.html" data-i18n="navOfficer">Officer Portal</a>
+            <a href="administration.html" data-i18n="navAdmin">District Administration</a>
+            <a href="tracking.html" data-i18n="navTracking">Track Complaint</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Documentation</div>
+          <div class="footer-links">
+            <a href="services.html" data-i18n="navServices">Services Guidance</a>
+            <a href="README.md" target="_blank">Project README</a>
+            <a href="docs/demo-script.md" target="_blank">Hackathon Demo Script</a>
+            <a href="docs/prototype-limitations.md" target="_blank">Prototype Boundaries</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-academic-card">
+            <strong>Team Vindhya Innovators</strong>
+            <div>AKS University, Satna / Rewa Region</div>
+            <div style="margin-top:0.35rem; color:#94A3B8;">
+              iComputex TechFest 2026<br />
+              Smart Rewa 2030 Hackathon
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 JanSetu AI · Academic Hackathon Prototype · Not an official government website.
+        </div>
+        <div style="display:flex; gap:1rem;">
+          <button class="demo-reset-btn" data-action="reset-data">Reset Demo Data</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/complaint-service.js"></script>
+  <script src="js/localization.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/tracking.js"></script>
+</body>
+</html>
